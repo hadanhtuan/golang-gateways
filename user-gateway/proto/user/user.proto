@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-package authService;
+package userService;
 
 import "proto/common/common.proto";
 
-option go_package = "go-tripper-gateway/grpc/auth_service";
+option go_package = "user-gateway/proto/user-service";
 
-service authService {
+service userService {
   rpc login(MessageLogin) returns (common.BaseResponse);
 }
 
