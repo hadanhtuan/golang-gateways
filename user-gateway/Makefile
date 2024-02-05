@@ -13,7 +13,7 @@ run:
     esac
 
 user-gateway:
-	nodemon --exec "go run" ./cmd/user-gateway/main.go --signal SIGTERM
+	nodemon --exec "go run" ./cmd/main.go --signal SIGTERM
 
 admin-gateway:
 	nodemon --exec "go run" ./cmd/admin-gateway/main.go --signal SIGTERM
