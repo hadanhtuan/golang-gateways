@@ -20,5 +20,4 @@ func main() {
 
 	InitGRPC(&app)
 	InitRoute(&app)
-
 }
