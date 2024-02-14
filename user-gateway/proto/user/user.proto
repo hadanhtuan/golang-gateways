@@ -4,7 +4,7 @@ package userService;
 
 import "proto/common/common.proto";
 
-option go_package = "user-gateway/proto/user-service";
+option go_package = "user-gateway/proto/user";
 
 service userService {
   rpc login(MessageLogin) returns (common.BaseResponse);
@@ -12,8 +12,5 @@ service userService {
 
 message MessageLogin {
   string username = 1;
-  string deviceId = 3;
   string password = 4;
-  string userAgent = 5;
-  string ipAddress = 6;
 }

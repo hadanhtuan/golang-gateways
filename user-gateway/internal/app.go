@@ -1,42 +1,42 @@
 package internal
 
 import (
-	"context"
 	"fmt"
 	"net/http"
-	apiUser "user-gateway/api/user"
-	"user-gateway/docs"
 	"user-gateway/internal/middleware"
-	pkg "github.com/hadanhtuan/go-sdk"
-	grpcClient "github.com/hadanhtuan/go-sdk/client"
-	. "github.com/hadanhtuan/go-sdk/common"
-	userService "user-gateway/proto/user"
-
+	"github.com/hadanhtuan/go-sdk/common"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
+	sdk "github.com/hadanhtuan/go-sdk"
+	apiUser "user-gateway/api/user"
+	userService "user-gateway/proto/user"
+	grpcClient "github.com/hadanhtuan/go-sdk/client"
 )
 
-func InitGRPC(app *pkg.App) error {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
+func InitGRPC(app *sdk.App) error {
 	app.Handler = map[string]interface{}{}
 
-	userConn, err := grpcClient.NewGRPCClientServiceConn(ctx, app.Config.GRPC.UserServicePort)
+	userServiceHost := fmt.Sprintf(
+		"%s:%s",
+		app.Config.GRPC.UserServiceHost,
+		app.Config.GRPC.UserServicePort,
+	)
+	fmt.Println(userServiceHost)
+	userConn, err := grpcClient.NewGRPCClientServiceConn(userServiceHost)
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to connect to %s: %v", userServiceHost, err)
 	}
-	defer userConn.Close()
+	// TODO: Bug if defer in here: defer userConn.Close()
 
 	userServiceClient := userService.NewUserServiceClient(userConn)
-	app.Handler[app.Config.GRPC.UserServicePort] = apiUser.NewHandler(userServiceClient)
+	app.Handler[app.Config.GRPC.UserServicePort] = apiUser.NewController(userServiceClient)
 
+
+	fmt.Println("Server down")
 	return nil
 }
 
-func InitRoute(app *pkg.App) error {
+func InitRoute(app *sdk.App) error {
 	config := app.Config
 
 	if config.HttpServer.ENV != "develop" {
@@ -50,27 +50,21 @@ func InitRoute(app *pkg.App) error {
 	router.Use(middleware.TimeoutMiddleware(config.HttpServer.RequestTimeoutPerSecond))
 
 	//TODO: missing config rate limit, will do it in future
-
+	fmt.Println(config.HttpServer.ApiPath)
 	basePath := router.Group(config.HttpServer.ApiPath)
 
 	basePath.GET("/ping", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, APIResponse{Status: http.StatusOK, Message: "Pong!"})
+		ctx.JSON(http.StatusOK, common.APIResponse{Status: http.StatusOK, Message: "Pong!"})
 	})
 
 	//Init Route
-	apiUser.InitRoute(&router.RouterGroup, app)
+	apiUser.InitRoute(basePath, app)
 	fmt.Println(config.HttpServer.SwaggerPath)
 
 	router.ForwardedByClientIP = true
 	router.SetTrustedProxies([]string{config.HttpServer.TrustedDomain})
 
 	gatewayRoute := fmt.Sprintf("%s:%s", config.HttpServer.TrustedDomain, config.HttpServer.AppPort)
-	swaggerRoute := fmt.Sprintf("/%s/*any", config.HttpServer.SwaggerPath)
-
-	// docs.SwaggerInfo.Host = gatewayRoute
-	docs.SwaggerInfo.BasePath = "/" + config.HttpServer.ApiPath
-
-	router.GET(swaggerRoute, ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.Run(gatewayRoute)
 
