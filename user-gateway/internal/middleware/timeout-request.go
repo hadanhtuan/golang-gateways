@@ -6,12 +6,12 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	. "github.com/hadanhtuan/go-sdk/common"
+	"github.com/hadanhtuan/go-sdk/common"
 )
 
 func TimeoutMiddleware(perSecond int) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		res := APIResponse{Status: http.StatusRequestTimeout}
+		res := common.APIResponse{Status: http.StatusRequestTimeout}
 
 		convertToSecond := time.Duration(perSecond) * time.Second
 

@@ -6,6 +6,7 @@ import (
 	pkg "github.com/hadanhtuan/go-sdk"
 )
 
+
 func InitRoute(router *gin.RouterGroup, app *pkg.App) error {
 	userController := app.Handler[app.Config.GRPC.UserServicePort].(*UserController)
 

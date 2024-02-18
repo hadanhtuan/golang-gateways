@@ -18,14 +18,14 @@ run-service:
 	nodemon --exec "go run" ./cmd/main.go --signal SIGTERM
 
 # GRPC
-gen-common:
+gen-sdk:
 	@protoc --go_out=. --go_opt=paths=source_relative \
 				--go-grpc_out=. --go-grpc_opt=paths=source_relative \
-				proto/common/*.proto
+				proto/sdk/*.proto
 
 gen-user:
 	@protoc --go_out=. --go_opt=paths=source_relative \
 				--go-grpc_out=. --go-grpc_opt=paths=source_relative \
 				proto/user/*.proto
 
-gen-all: gen-common gen-user
+gen-all: gen-sdk gen-user

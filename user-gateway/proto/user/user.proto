@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package userService;
 
-import "proto/common/common.proto";
+import "proto/sdk/sdk.proto";
 
 option go_package = "user-gateway/proto/user";
 
 service userService {
-  rpc login(MessageLogin) returns (common.BaseResponse);
+  rpc login(MessageLogin) returns (sdk.BaseResponse);
 }
 
 message MessageLogin {

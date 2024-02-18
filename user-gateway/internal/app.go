@@ -22,7 +22,7 @@ func InitGRPC(app *sdk.App) error {
 		app.Config.GRPC.UserServicePort,
 	)
 	fmt.Println(userServiceHost)
-	userConn, err := grpcClient.NewGRPCClientServiceConn(userServiceHost)
+	userConn, err := grpcClient.NewGRPCClientConn(userServiceHost)
 	if err != nil {
 		return fmt.Errorf("Failed to connect to %s: %v", userServiceHost, err)
 	}

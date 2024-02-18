@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package common;
+package sdk;
 
-option go_package = "user-gateway/proto/common";
+option go_package = "user-gateway/proto/sdk";
 
 message BaseResponse {
   int32  status = 1;
