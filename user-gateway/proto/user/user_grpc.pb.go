@@ -11,7 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	common "user-gateway/proto/common"
+	sdk "user-gateway/proto/sdk"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
-	Login(ctx context.Context, in *MessageLogin, opts ...grpc.CallOption) (*common.BaseResponse, error)
+	Login(ctx context.Context, in *MessageLogin, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
 }
 
 type userServiceClient struct {
@@ -34,8 +34,8 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 	return &userServiceClient{cc}
 }
 
-func (c *userServiceClient) Login(ctx context.Context, in *MessageLogin, opts ...grpc.CallOption) (*common.BaseResponse, error) {
-	out := new(common.BaseResponse)
+func (c *userServiceClient) Login(ctx context.Context, in *MessageLogin, opts ...grpc.CallOption) (*sdk.BaseResponse, error) {
+	out := new(sdk.BaseResponse)
 	err := c.cc.Invoke(ctx, "/userService.userService/login", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func (c *userServiceClient) Login(ctx context.Context, in *MessageLogin, opts ..
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
 type UserServiceServer interface {
-	Login(context.Context, *MessageLogin) (*common.BaseResponse, error)
+	Login(context.Context, *MessageLogin) (*sdk.BaseResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -55,7 +55,7 @@ type UserServiceServer interface {
 type UnimplementedUserServiceServer struct {
 }
 
-func (UnimplementedUserServiceServer) Login(context.Context, *MessageLogin) (*common.BaseResponse, error) {
+func (UnimplementedUserServiceServer) Login(context.Context, *MessageLogin) (*sdk.BaseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
