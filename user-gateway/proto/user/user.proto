@@ -4,13 +4,27 @@ package userService;
 
 import "proto/sdk/sdk.proto";
 
-option go_package = "user-gateway/proto/user";
+option go_package = "user-service/proto/user";
 
 service userService {
-  rpc login(MessageLogin) returns (sdk.BaseResponse);
+  rpc login(MsgLogin) returns (sdk.BaseResponse);
+  rpc register(MsgRegister) returns (sdk.BaseResponse);
 }
 
-message MessageLogin {
-  string username = 1;
+message MsgLogin {
+  string email = 1;
+  string password = 2;
+  string userAgent = 3;
+  string ipAddress = 4;
+  string deviceId = 5;
+}
+
+message MsgRegister {
+  string email = 1;
+  string firstName = 2;
+  string lastName = 3;
   string password = 4;
+  string userAgent = 5;
+  string ipAddress = 6;
+  string deviceId = 7;
 }

@@ -13,5 +13,6 @@ func InitRoute(router *gin.RouterGroup, app *pkg.App) error {
 	userGroup := router.Group("/user")
 
 	userGroup.POST("/login", userController.Login)
+	userGroup.POST("/register", userController.Register)
 	return nil
 }
