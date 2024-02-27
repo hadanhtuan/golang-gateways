@@ -7,7 +7,7 @@ import (
 	"github.com/hadanhtuan/go-sdk/common"
 )
 
-func ConvertResult2(payload *sdk.BaseResponse) *common.APIResponse {
+func ConvertResult(payload *sdk.BaseResponse) *common.APIResponse {
 	var data interface{}
 
 	if payload == nil {
@@ -16,10 +16,11 @@ func ConvertResult2(payload *sdk.BaseResponse) *common.APIResponse {
 			Status:  common.APIStatus.ServerError,
 		}
 	}
+
 	err := json.Unmarshal([]byte(payload.Data), &data)
 	if err != nil {
 		return &common.APIResponse{
-			Message: "Error marshall payload data. Error detail: " + err.Error(),
+			Message: payload.Message,
 			Status:  common.APIStatus.ServerError,
 		}
 	}
@@ -30,5 +31,4 @@ func ConvertResult2(payload *sdk.BaseResponse) *common.APIResponse {
 		Total:   payload.Total,
 		Data:    data,
 	}
-
 }
