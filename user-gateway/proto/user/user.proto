@@ -9,6 +9,9 @@ option go_package = "user-service/proto/user";
 service userService {
   rpc login(MsgLogin) returns (sdk.BaseResponse);
   rpc register(MsgRegister) returns (sdk.BaseResponse);
+  rpc refreshToken(MsgToken) returns (sdk.BaseResponse);
+  rpc logout(MsgToken) returns (sdk.BaseResponse);
+  rpc getProfile(MsgToken) returns (sdk.BaseResponse);
 }
 
 message MsgLogin {
@@ -27,4 +30,10 @@ message MsgRegister {
   string userAgent = 5;
   string ipAddress = 6;
   string deviceId = 7;
+}
+
+message MsgToken {
+  string email = 1;
+  string deviceId = 2;
+  string token = 3;
 }
