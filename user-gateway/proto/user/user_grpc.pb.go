@@ -25,6 +25,9 @@ const _ = grpc.SupportPackageIsVersion7
 type UserServiceClient interface {
 	Login(ctx context.Context, in *MsgLogin, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
 	Register(ctx context.Context, in *MsgRegister, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
+	RefreshToken(ctx context.Context, in *MsgToken, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
+	Logout(ctx context.Context, in *MsgToken, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
+	GetProfile(ctx context.Context, in *MsgToken, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
 }
 
 type userServiceClient struct {
@@ -53,12 +56,42 @@ func (c *userServiceClient) Register(ctx context.Context, in *MsgRegister, opts 
 	return out, nil
 }
 
+func (c *userServiceClient) RefreshToken(ctx context.Context, in *MsgToken, opts ...grpc.CallOption) (*sdk.BaseResponse, error) {
+	out := new(sdk.BaseResponse)
+	err := c.cc.Invoke(ctx, "/userService.userService/refreshToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) Logout(ctx context.Context, in *MsgToken, opts ...grpc.CallOption) (*sdk.BaseResponse, error) {
+	out := new(sdk.BaseResponse)
+	err := c.cc.Invoke(ctx, "/userService.userService/logout", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetProfile(ctx context.Context, in *MsgToken, opts ...grpc.CallOption) (*sdk.BaseResponse, error) {
+	out := new(sdk.BaseResponse)
+	err := c.cc.Invoke(ctx, "/userService.userService/getProfile", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
 type UserServiceServer interface {
 	Login(context.Context, *MsgLogin) (*sdk.BaseResponse, error)
 	Register(context.Context, *MsgRegister) (*sdk.BaseResponse, error)
+	RefreshToken(context.Context, *MsgToken) (*sdk.BaseResponse, error)
+	Logout(context.Context, *MsgToken) (*sdk.BaseResponse, error)
+	GetProfile(context.Context, *MsgToken) (*sdk.BaseResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -71,6 +104,15 @@ func (UnimplementedUserServiceServer) Login(context.Context, *MsgLogin) (*sdk.Ba
 }
 func (UnimplementedUserServiceServer) Register(context.Context, *MsgRegister) (*sdk.BaseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+}
+func (UnimplementedUserServiceServer) RefreshToken(context.Context, *MsgToken) (*sdk.BaseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RefreshToken not implemented")
+}
+func (UnimplementedUserServiceServer) Logout(context.Context, *MsgToken) (*sdk.BaseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
+}
+func (UnimplementedUserServiceServer) GetProfile(context.Context, *MsgToken) (*sdk.BaseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProfile not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -121,6 +163,60 @@ func _UserService_Register_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_RefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgToken)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).RefreshToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/userService.userService/refreshToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).RefreshToken(ctx, req.(*MsgToken))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_Logout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgToken)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).Logout(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/userService.userService/logout",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).Logout(ctx, req.(*MsgToken))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgToken)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetProfile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/userService.userService/getProfile",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetProfile(ctx, req.(*MsgToken))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -135,6 +231,18 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "register",
 			Handler:    _UserService_Register_Handler,
+		},
+		{
+			MethodName: "refreshToken",
+			Handler:    _UserService_RefreshToken_Handler,
+		},
+		{
+			MethodName: "logout",
+			Handler:    _UserService_Logout_Handler,
+		},
+		{
+			MethodName: "getProfile",
+			Handler:    _UserService_GetProfile_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
