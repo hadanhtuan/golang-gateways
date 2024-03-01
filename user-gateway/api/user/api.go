@@ -12,11 +12,11 @@ import (
 )
 
 type UserController struct {
-	ServiceUserClient userProto.UserServiceClient
+	ServiceClient userProto.UserServiceClient
 }
 
-func NewUserController(serviceUserClient userProto.UserServiceClient) *UserController {
-	return &UserController{ServiceUserClient: serviceUserClient}
+func NewUserController(serviceClient userProto.UserServiceClient) *UserController {
+	return &UserController{ServiceClient: serviceClient}
 }
 
 func (uc *UserController) Login(c *gin.Context) {
@@ -34,24 +34,46 @@ func (uc *UserController) Login(c *gin.Context) {
 	userAgent := c.Request.UserAgent()
 	deviceId := sdk.HashDevice(payload.Email, ipAddress, userAgent)
 
-	result, _ := uc.ServiceUserClient.Login(ctx, &userProto.MsgLogin{
-		Email:     payload.Email,
-		Password:  payload.Password,
-		UserAgent: userAgent,
-		IpAddress: ipAddress,
-		DeviceId:  deviceId,
-	})
+	payload.UserAgent = userAgent
+	payload.IpAddress = ipAddress
+	payload.DeviceId = deviceId
+
+	result, _ := uc.ServiceClient.Login(ctx, &payload)
 
 	newResult := util.ConvertResult(result)
 	c.JSON(int(newResult.Status), newResult)
 }
 
 func (uc *UserController) Register(c *gin.Context) {
-
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
 	var payload userProto.MsgRegister
+	err := c.BindJSON(&payload)
+
+	if err != nil {
+		c.JSON(int(common.APIStatus.BadRequest), nil)
+		return
+	}
+
+	ipAddress := c.ClientIP()
+	userAgent := c.Request.UserAgent()
+	deviceId := sdk.HashDevice(payload.Email, ipAddress, userAgent)
+	payload.UserAgent = userAgent
+	payload.IpAddress = ipAddress
+	payload.DeviceId = deviceId
+
+	result, _ := uc.ServiceClient.Register(ctx, &payload)
+
+	newResult := util.ConvertResult(result)
+	c.JSON(int(newResult.Status), newResult)
+}
+
+func (uc *UserController) RefreshToken(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	var payload userProto.MsgToken
 	err := c.BindJSON(&payload)
 	if err != nil {
 		c.JSON(int(common.APIStatus.BadRequest), nil)
@@ -61,16 +83,31 @@ func (uc *UserController) Register(c *gin.Context) {
 	ipAddress := c.ClientIP()
 	userAgent := c.Request.UserAgent()
 	deviceId := sdk.HashDevice(payload.Email, ipAddress, userAgent)
+	payload.DeviceId = deviceId
 
-	result, _ := uc.ServiceUserClient.Register(ctx, &userProto.MsgRegister{
-		Email:     payload.Email,
-		Password:  payload.Password,
-		FirstName: payload.FirstName,
-		LastName:  payload.LastName,
-		UserAgent: userAgent,
-		IpAddress: ipAddress,
-		DeviceId:  deviceId,
-	})
+	result, _ := uc.ServiceClient.RefreshToken(ctx, &payload)
+
+	newResult := util.ConvertResult(result)
+	c.JSON(int(newResult.Status), newResult)
+}
+
+func (uc *UserController) Logout(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	var payload userProto.MsgToken
+	err := c.BindJSON(&payload)
+	if err != nil {
+		c.JSON(int(common.APIStatus.BadRequest), nil)
+		return
+	}
+
+	ipAddress := c.ClientIP()
+	userAgent := c.Request.UserAgent()
+	deviceId := sdk.HashDevice(payload.Email, ipAddress, userAgent)
+	payload.DeviceId = deviceId
+
+	result, _ := uc.ServiceClient.Logout(ctx, &payload)
 
 	newResult := util.ConvertResult(result)
 	c.JSON(int(newResult.Status), newResult)
