@@ -12,11 +12,11 @@ import (
 )
 
 type UserController struct {
-	ServiceClient userProto.UserServiceClient
+	ServiceUserClient userProto.UserServiceClient
 }
 
-func NewController(serviceClient userProto.UserServiceClient) *UserController {
-	return &UserController{ServiceClient: serviceClient}
+func NewUserController(serviceUserClient userProto.UserServiceClient) *UserController {
+	return &UserController{ServiceUserClient: serviceUserClient}
 }
 
 func (uc *UserController) Login(c *gin.Context) {
@@ -34,7 +34,7 @@ func (uc *UserController) Login(c *gin.Context) {
 	userAgent := c.Request.UserAgent()
 	deviceId := sdk.HashDevice(payload.Email, ipAddress, userAgent)
 
-	result, _ := uc.ServiceClient.Login(ctx, &userProto.MsgLogin{
+	result, _ := uc.ServiceUserClient.Login(ctx, &userProto.MsgLogin{
 		Email:     payload.Email,
 		Password:  payload.Password,
 		UserAgent: userAgent,
@@ -62,8 +62,7 @@ func (uc *UserController) Register(c *gin.Context) {
 	userAgent := c.Request.UserAgent()
 	deviceId := sdk.HashDevice(payload.Email, ipAddress, userAgent)
 
-
-	result, _ := uc.ServiceClient.Register(ctx, &userProto.MsgRegister{
+	result, _ := uc.ServiceUserClient.Register(ctx, &userProto.MsgRegister{
 		Email:     payload.Email,
 		Password:  payload.Password,
 		FirstName: payload.FirstName,

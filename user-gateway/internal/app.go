@@ -3,14 +3,17 @@ package internal
 import (
 	"fmt"
 	"net/http"
+	apiBooking "user-gateway/api/booking"
+	apiUser "user-gateway/api/user"
 	"user-gateway/internal/middleware"
-	"github.com/hadanhtuan/go-sdk/common"
+	bookingService "user-gateway/proto/booking"
+	userService "user-gateway/proto/user"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	sdk "github.com/hadanhtuan/go-sdk"
-	apiUser "user-gateway/api/user"
-	userService "user-gateway/proto/user"
 	grpcClient "github.com/hadanhtuan/go-sdk/client"
+	"github.com/hadanhtuan/go-sdk/common"
 )
 
 func InitGRPC(app *sdk.App) error {
@@ -21,16 +24,29 @@ func InitGRPC(app *sdk.App) error {
 		app.Config.GRPC.UserServiceHost,
 		app.Config.GRPC.UserServicePort,
 	)
+	bookingServiceHost := fmt.Sprintf(
+		"%s:%s",
+		app.Config.GRPC.BookingServiceHost,
+		app.Config.GRPC.BookingServicePort,
+	)
 	fmt.Println(userServiceHost)
 	userConn, err := grpcClient.NewGRPCClientConn(userServiceHost)
 	if err != nil {
 		return fmt.Errorf("Failed to connect to %s: %v", userServiceHost, err)
 	}
+	bookingConn, err := grpcClient.NewGRPCClientConn(bookingServiceHost)
+	if err != nil {
+		return fmt.Errorf("Failed to connect to %s: %v", bookingServiceHost, err)
+	}
+
 	// TODO: Bug if defer in here: defer userConn.Close()
-
+	// USER
 	userServiceClient := userService.NewUserServiceClient(userConn)
-	app.Handler[app.Config.GRPC.UserServicePort] = apiUser.NewController(userServiceClient)
+	app.Handler[app.Config.GRPC.UserServicePort] = apiUser.NewUserController(userServiceClient)
 
+	//BOOKING
+	bookingServiceClient := bookingService.NewBookingServiceClient(bookingConn)
+	app.Handler[app.Config.GRPC.BookingServicePort] = apiBooking.NewBookingController(bookingServiceClient)
 
 	fmt.Println("Server down")
 	return nil
@@ -58,7 +74,11 @@ func InitRoute(app *sdk.App) error {
 	})
 
 	//Init Route
+	// USER
 	apiUser.InitRoute(basePath, app)
+
+	//BOOKING
+	apiBooking.InitRoute(basePath, app)
 	fmt.Println(config.HttpServer.SwaggerPath)
 
 	router.ForwardedByClientIP = true
