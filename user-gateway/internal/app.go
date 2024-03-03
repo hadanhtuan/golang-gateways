@@ -21,7 +21,6 @@ func InitGRPC(app *sdk.App) error {
 		app.Config.GRPC.UserServiceHost,
 		app.Config.GRPC.UserServicePort,
 	)
-	fmt.Println(userServiceHost)
 	userConn, err := grpcClient.NewGRPCClientConn(userServiceHost)
 	if err != nil {
 		return fmt.Errorf("Failed to connect to %s: %v", userServiceHost, err)
@@ -50,7 +49,6 @@ func InitRoute(app *sdk.App) error {
 	router.Use(middleware.TimeoutMiddleware(config.HttpServer.RequestTimeoutPerSecond))
 
 	//TODO: missing config rate limit, will do it in future
-	fmt.Println(config.HttpServer.ApiPath)
 	basePath := router.Group(config.HttpServer.ApiPath)
 
 	basePath.GET("/ping", func(ctx *gin.Context) {
@@ -59,7 +57,6 @@ func InitRoute(app *sdk.App) error {
 
 	//Init Route
 	apiUser.InitRoute(basePath, app)
-	fmt.Println(config.HttpServer.SwaggerPath)
 
 	router.ForwardedByClientIP = true
 	router.SetTrustedProxies([]string{config.HttpServer.TrustedDomain})
