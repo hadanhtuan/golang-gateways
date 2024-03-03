@@ -3,7 +3,6 @@ package apiUser
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"strings"
 	"time"
 	"user-gateway/internal/util"
