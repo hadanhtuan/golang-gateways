@@ -1,11 +1,9 @@
 package apiUser
 
 import (
-	// "user-gateway/internal/model"
 	"github.com/gin-gonic/gin"
 	pkg "github.com/hadanhtuan/go-sdk"
 )
-
 
 func InitRoute(router *gin.RouterGroup, app *pkg.App) error {
 	userController := app.Handler[app.Config.GRPC.UserServicePort].(*UserController)
@@ -14,5 +12,8 @@ func InitRoute(router *gin.RouterGroup, app *pkg.App) error {
 
 	userGroup.POST("/login", userController.Login)
 	userGroup.POST("/register", userController.Register)
+	userGroup.POST("/refresh-token", userController.RefreshToken)
+	userGroup.GET("/logout", userController.AuthorizeRequest(), userController.Logout)
+	userGroup.GET("/profile", userController.AuthorizeRequest(), userController.GetProfile)
 	return nil
 }

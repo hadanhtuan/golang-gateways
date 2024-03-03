@@ -10,8 +10,9 @@ service userService {
   rpc login(MsgLogin) returns (sdk.BaseResponse);
   rpc register(MsgRegister) returns (sdk.BaseResponse);
   rpc refreshToken(MsgToken) returns (sdk.BaseResponse);
-  rpc logout(MsgToken) returns (sdk.BaseResponse);
-  rpc getProfile(MsgToken) returns (sdk.BaseResponse);
+  rpc logout(MsgID) returns (sdk.BaseResponse);
+  rpc getProfile(MsgID) returns (sdk.BaseResponse);
+  rpc verifyToken(MsgToken) returns (sdk.BaseResponse);
 }
 
 message MsgLogin {
@@ -33,7 +34,9 @@ message MsgRegister {
 }
 
 message MsgToken {
-  string email = 1;
-  string deviceId = 2;
-  string token = 3;
+  string token = 1;
+}
+
+message MsgID {
+  string id = 1;
 }
