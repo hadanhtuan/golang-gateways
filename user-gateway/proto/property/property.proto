@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package propertyService;
+
+// import "booking-service/proto/sdk/sdk.proto";
+// import sdk
+import "proto/sdk/sdk.proto";
+option go_package = "booking-service/proto/property";
+
+service propertyService {
+  rpc CreateProperty(MsgCreatePropertyRequest) returns (sdk.BaseResponse);
+}
+
+message MsgCreatePropertyRequest {
+  int64 wardId = 1;
+  int64 HostId = 2;
+  int64 numBed = 3;
+  int64 numBath = 4;
+  int64 numBedroom = 5;
+  string propertyType = 6;
+
+}
+
+// message MsgRegister {
+//   string email = 1;
+//   string firstName = 2;
+//   string lastName = 3;
+//   string password = 4;
+//   string userAgent = 5;
+//   string ipAddress = 6;
+//   string deviceId = 7;
+// }

@@ -8,18 +8,61 @@ option go_package = "booking-service/proto/booking";
 
 service bookingService {
   rpc GetBookingDetail(MsgGetBookingRequest) returns (sdk.BaseResponse);
+  // Property
+  rpc GetPropertyDetail(MsgGetPropertyRequest) returns (sdk.BaseResponse);
+  rpc GetAllProperty(MsgGetAllPropertyRequest) returns (sdk.BaseResponse);
+  rpc CreateProperty(MsgCreatePropertyRequest) returns (sdk.BaseResponse);
+  rpc UpdateProperty(MsgUpdatePropertyRequest) returns (sdk.BaseResponse);
+  rpc DeleteProperty(MsgDeletePropertyRequest) returns (sdk.BaseResponse);
+
 }
 
 message MsgGetBookingRequest {
   int64 bookingId = 1;
 }
 
-// message MsgRegister {
-//   string email = 1;
-//   string firstName = 2;
-//   string lastName = 3;
-//   string password = 4;
-//   string userAgent = 5;
-//   string ipAddress = 6;
-//   string deviceId = 7;
-// }
+
+message MsgCreatePropertyRequest {
+  string wardId = 1;
+  string hostId = 2;
+  int64 numGuests = 6;
+  int64 numBed = 3;
+  int64 numBath = 4;
+  int64 numBedroom = 5;
+  bool isGuestFavor = 7;
+  string body = 8;
+  string title = 9;
+  // string propertyType = 6;
+
+}
+message MsgUpdatePropertyRequest {
+  string propertyId = 10;
+  int64 numGuests = 6;
+  int64 numBed = 3;
+  int64 numBath = 4;
+  int64 numBedroom = 5;
+  bool isGuestFavor = 7;
+  string body = 8;
+  string title = 9;
+
+  // string propertyType = 6;
+  
+
+}
+
+message MsgDeletePropertyRequest {
+  string propertyId = 1;
+  
+}
+
+message MsgGetPropertyRequest {
+  string propertyId = 1;
+  
+}
+message MsgGetAllPropertyRequest {
+  int64 page = 1;
+  int64 limit = 2;
+  
+}
+
+
