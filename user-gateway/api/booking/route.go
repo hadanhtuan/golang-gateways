@@ -13,7 +13,7 @@ func InitRoute(router *gin.RouterGroup, app *pkg.App) error {
 
 	bookingGroup.GET("/:bookingId", bookingController.GetBookingDetail)
 	bookingGroup.GET("/property/:propertyId", bookingController.GetPropertyDetail)
-	// bookingGroup.GET("/property", bookingController.GetPropertyDetail)
+	bookingGroup.GET("/property", bookingController.GetAllProperty)
 	bookingGroup.POST("/property", bookingController.CreateProperty)
 	bookingGroup.PATCH("/property/:propertyId", bookingController.UpdateProperty)
 	bookingGroup.DELETE("/property/:propertyId", bookingController.DeleteProperty)
