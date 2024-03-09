@@ -2,6 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v4.25.2
+// - protoc             v4.25.3
 // source: proto/user/user.proto
 
 package user

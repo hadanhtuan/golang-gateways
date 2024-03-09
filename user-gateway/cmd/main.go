@@ -1,9 +1,10 @@
 package main
 
 import (
+	. "user-gateway/internal"
+
 	. "github.com/hadanhtuan/go-sdk"
 	config "github.com/hadanhtuan/go-sdk/config"
-	. "user-gateway/internal"
 )
 
 // @securityDefinitions.apikey	BearerAuth
