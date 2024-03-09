@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package bookingService;
+
+import "proto/sdk/sdk.proto";
+
+option go_package = "booking-service/proto/booking";
+service bookingService {
+  rpc GetBookingDetail(MsgGetBookingRequest) returns (sdk.BaseResponse);
+  // Property
+  rpc GetPropertyDetail(MsgGetPropertyRequest) returns (sdk.BaseResponse);
+  rpc GetAllProperty(MessageQueryRoom) returns (sdk.BaseResponse);
+  rpc CreateProperty(MsgCreatePropertyRequest) returns (sdk.BaseResponse);
+  rpc UpdateProperty(MsgUpdatePropertyRequest) returns (sdk.BaseResponse);
+  rpc DeleteProperty(MsgDeletePropertyRequest) returns (sdk.BaseResponse);
+
+}
+
+message MsgGetBookingRequest {
+  int64 bookingId = 1;
+}
+
+
+message MsgCreatePropertyRequest {
+  string wardId = 1;
+  string hostId = 2;
+  int64 numGuests = 6;
+  int64 numBed = 3;
+  int64 numBath = 4;
+  int64 numBedroom = 5;
+  bool isGuestFavor = 7;
+  string body = 8;
+  string title = 9;
+  int64 propertyType = 10;
+
+}
+message MsgUpdatePropertyRequest {
+  string propertyId = 10;
+  int64 numGuests = 6;
+  int64 numBed = 3;
+  int64 numBath = 4;
+  int64 numBedroom = 5;
+  bool isGuestFavor = 7;
+  string body = 8;
+  string title = 9;
+
+  int64 propertyType = 11;
+  
+
+}
+
+message MsgDeletePropertyRequest {
+  string propertyId = 1;
+  
+}
+
+message MsgGetPropertyRequest {
+  string propertyId = 1;
+  
+}
+
+message MessageQueryRoom {
+  
+sdk.Pagination paginate = 1;
+optional sdk.TimeQuery timeQuery = 2;
+optional QueryRoom queryFields = 3;
+optional OrderRoom orderFields = 4;
+}
+
+message QueryRoom {
+string userId = 1;
+optional string id = 2;
+optional string name = 3;
+}
+
+message OrderRoom {
+optional sdk.Sort createdAt = 1;
+}
+
+
+

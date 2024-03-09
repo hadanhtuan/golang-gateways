@@ -17,7 +17,7 @@ type UserController struct {
 	ServiceClient userProto.UserServiceClient
 }
 
-func NewController(serviceClient userProto.UserServiceClient) *UserController {
+func NewUserController(serviceClient userProto.UserServiceClient) *UserController {
 	return &UserController{ServiceClient: serviceClient}
 }
 

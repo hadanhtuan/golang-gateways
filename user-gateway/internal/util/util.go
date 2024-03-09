@@ -16,12 +16,11 @@ func ConvertResult(payload *sdk.BaseResponse) *common.APIResponse {
 			Status:  common.APIStatus.ServerError,
 		}
 	}
-
 	err := json.Unmarshal([]byte(payload.Data), &data)
 	if err != nil {
 		return &common.APIResponse{
 			Message: payload.Message,
-			Status:  common.APIStatus.ServerError,
+			Status:  payload.Status,
 		}
 	}
 
