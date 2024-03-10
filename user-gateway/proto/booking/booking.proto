@@ -13,7 +13,11 @@ service bookingService {
   rpc CreateProperty(MsgCreatePropertyRequest) returns (sdk.BaseResponse);
   rpc UpdateProperty(MsgUpdatePropertyRequest) returns (sdk.BaseResponse);
   rpc DeleteProperty(MsgDeletePropertyRequest) returns (sdk.BaseResponse);
-
+  // Review
+  rpc CreateReview(MsgCreateReviewRequest) returns (sdk.BaseResponse);
+  rpc UpdateReview(MsgUpdateReviewRequest) returns (sdk.BaseResponse);
+  rpc DeleteReview(MsgDeleteReviewRequest) returns (sdk.BaseResponse);
+  rpc GetReview(MessageQueryReview) returns (sdk.BaseResponse);
 }
 
 message MsgGetBookingRequest {
@@ -78,4 +82,41 @@ optional sdk.Sort createdAt = 1;
 }
 
 
+message MsgCreateReviewRequest{
+  string userId = 1;
+  string propertyId = 2;
+  string parentId = 3;
+  float rating = 4;
+  string comment = 5;
+  string imageUrl = 6;
+}
+message MsgUpdateReviewRequest{
+  string reviewId = 1;
+  float rating = 4;
+  string comment = 5;
+  string imageUrl = 6;
+}
+
+message MsgDeleteReviewRequest{
+  string reviewId = 1;
+}
+
+
+message MessageQueryReview {
+  
+sdk.Pagination paginate = 1;
+optional sdk.TimeQuery timeQuery = 2;
+optional QueryReview queryFields = 3;
+optional OrderReview orderFields = 4;
+}
+
+message QueryReview {
+string userId = 1;
+optional string id = 2;
+optional string name = 3;
+}
+
+message OrderReview {
+optional sdk.Sort createdAt = 1;
+}
 
