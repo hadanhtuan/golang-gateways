@@ -3,7 +3,6 @@ package apiBooking
 import (
 	"context"
 	"fmt"
-	"strconv"
 	"time"
 	"user-gateway/internal/util"
 	bookingProto "user-gateway/proto/booking"
@@ -21,60 +20,33 @@ func NewBookingController(serviceBookingClient bookingProto.BookingServiceClient
 	return &BookingController{ServiceBookingClient: serviceBookingClient}
 }
 
-func (bc *BookingController) GetPropertyDetail(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
-	var payload bookingProto.MsgGetProperty
-	propertyId := c.Param("propertyId")
-
-	if propertyId == "" {
-		c.JSON(int(common.APIStatus.BadRequest), &sdk.BaseResponse{
-			Status:  common.APIStatus.BadRequest,
-			Message: "Invalid request",
-		})
-		return
-	}
-	payload.PropertyId = propertyId
-	result, _ := bc.ServiceBookingClient.GetPropertyDetail(ctx, &payload)
-	newResult := util.ConvertResult(result)
-
-	c.JSON(int(newResult.Status), newResult)
-}
-
-func (bc *BookingController) GetAllProperty(c *gin.Context) {
+func (bc *BookingController) GetProperty(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
 	var payload bookingProto.MsgQueryProperty
 	payload.Paginate = &sdk.Pagination{}
-	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
-	
+	payload.Paginate = &sdk.Pagination{
+		Offset: 0,
+		Limit:  10,
+	}
+	err := c.BindJSON(&payload)
+
 	if err != nil {
 		c.JSON(int(common.APIStatus.BadRequest), &sdk.BaseResponse{
 			Status:  common.APIStatus.BadRequest,
 			Message: "Invalid request",
 		})
 		return
-	}
-	limit, err := strconv.Atoi(c.DefaultQuery("limit", "10"))
-	if err != nil {
-		c.JSON(int(common.APIStatus.BadRequest), &sdk.BaseResponse{
-			Status:  common.APIStatus.BadRequest,
-			Message: "Invalid request",
-		})
-		return
-	}
-	if page < 0 && page >= 100 {
-		page = 1
 	}
 
-	if limit < 0 && limit >= 100 {
-		limit = 10
+	if payload.QueryFields != nil && payload.QueryFields.Id != nil {
+		payload.Paginate = &sdk.Pagination{
+			Offset: 0,
+			Limit:  1,
+		}
 	}
-	payload.Paginate.Offset = int32((page - 1) * limit)
-	payload.Paginate.Limit = int32(limit)
-	result, _ := bc.ServiceBookingClient.GetAllProperty(ctx, &payload)
+	result, _ := bc.ServiceBookingClient.GetProperty(ctx, &payload)
 	newResult := util.ConvertResult(result)
 
 	c.JSON(int(newResult.Status), newResult)
@@ -105,16 +77,14 @@ func (bc *BookingController) UpdateProperty(c *gin.Context) {
 
 	var payload bookingProto.MsgUpdateProperty
 	err := c.BindJSON(&payload)
-	propertyId := c.Param("propertyId")
 
-	if propertyId == "" || err != nil {
+	if err != nil {
 		c.JSON(int(common.APIStatus.BadRequest), &sdk.BaseResponse{
 			Status:  common.APIStatus.BadRequest,
 			Message: "Invalid request",
 		})
 		return
 	}
-	payload.PropertyId = propertyId
 	result, _ := bc.ServiceBookingClient.UpdateProperty(ctx, &payload)
 	newResult := util.ConvertResult(result)
 
@@ -144,7 +114,7 @@ func (bc *BookingController) GetBookingDetail(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 	id := c.Param("bookingId")
-	
+
 	result, _ := bc.ServiceBookingClient.GetBookingDetail(ctx, &bookingProto.MsgGetBooking{
 		BookingId: id,
 	})
@@ -156,7 +126,7 @@ func (bc *BookingController) GetBookingDetail(c *gin.Context) {
 func (bc *BookingController) CreateReview(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	var payload bookingProto.MsgCreateReviewRequest
+	var payload bookingProto.MsgCreateReview
 	err := c.BindJSON(&payload)
 
 	if err != nil {
@@ -174,17 +144,15 @@ func (bc *BookingController) CreateReview(c *gin.Context) {
 func (bc *BookingController) UpdateReview(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	var payload bookingProto.MsgUpdateReviewRequest
+	var payload bookingProto.MsgUpdateReview
 	err := c.BindJSON(&payload)
-	reviewId := c.Param("reviewId")
-	if reviewId == "" || err != nil {
+	if err != nil {
 		c.JSON(int(common.APIStatus.BadRequest), &sdk.BaseResponse{
 			Status:  common.APIStatus.BadRequest,
 			Message: "Invalid request",
 		})
 		return
 	}
-	payload.ReviewId = reviewId
 	result, _ := bc.ServiceBookingClient.UpdateReview(ctx, &payload)
 	newResult := util.ConvertResult(result)
 
@@ -194,7 +162,7 @@ func (bc *BookingController) UpdateReview(c *gin.Context) {
 func (bc *BookingController) DeleteReview(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	var payload bookingProto.MsgDeleteReviewRequest
+	var payload bookingProto.MsgDeleteReview
 	reviewId := c.Param("reviewId")
 	if reviewId == "" {
 		c.JSON(int(common.APIStatus.BadRequest), &sdk.BaseResponse{
@@ -214,8 +182,12 @@ func (bc *BookingController) GetReview(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 	var payload bookingProto.MessageQueryReview
-	payload.Paginate = &sdk.Pagination{}
+	payload.Paginate = &sdk.Pagination{
+		Offset: 0,
+		Limit:  10,
+	}
 	err := c.BindJSON(&payload)
+
 	if err != nil {
 		c.JSON(int(common.APIStatus.BadRequest), &sdk.BaseResponse{
 			Status:  common.APIStatus.BadRequest,
@@ -224,6 +196,12 @@ func (bc *BookingController) GetReview(c *gin.Context) {
 		return
 	}
 
+	if payload.QueryFields != nil && payload.QueryFields.Id != nil {
+		payload.Paginate = &sdk.Pagination{
+			Offset: 0,
+			Limit:  1,
+		}
+	}
 	result, err := bc.ServiceBookingClient.GetReview(ctx, &payload)
 	newResult := util.ConvertResult(result)
 	c.JSON(int(newResult.Status), newResult)
