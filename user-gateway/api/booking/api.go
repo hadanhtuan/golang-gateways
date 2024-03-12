@@ -152,3 +152,79 @@ func (bc *BookingController) GetBookingDetail(c *gin.Context) {
 	newResult := util.ConvertResult(result)
 	c.JSON(int(newResult.Status), newResult)
 }
+
+func (bc *BookingController) CreateReview(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	var payload bookingProto.MsgCreateReviewRequest
+	err := c.BindJSON(&payload)
+
+	if err != nil {
+		c.JSON(int(common.APIStatus.BadRequest), &sdk.BaseResponse{
+			Status:  common.APIStatus.BadRequest,
+			Message: "Invalid request",
+		})
+		return
+	}
+	result, _ := bc.ServiceBookingClient.CreateReview(ctx, &payload)
+	newResult := util.ConvertResult(result)
+	c.JSON(int(newResult.Status), newResult)
+}
+
+func (bc *BookingController) UpdateReview(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	var payload bookingProto.MsgUpdateReviewRequest
+	err := c.BindJSON(&payload)
+	reviewId := c.Param("reviewId")
+	if reviewId == "" || err != nil {
+		c.JSON(int(common.APIStatus.BadRequest), &sdk.BaseResponse{
+			Status:  common.APIStatus.BadRequest,
+			Message: "Invalid request",
+		})
+		return
+	}
+	payload.ReviewId = reviewId
+	result, _ := bc.ServiceBookingClient.UpdateReview(ctx, &payload)
+	newResult := util.ConvertResult(result)
+
+	c.JSON(int(newResult.Status), newResult)
+}
+
+func (bc *BookingController) DeleteReview(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	var payload bookingProto.MsgDeleteReviewRequest
+	reviewId := c.Param("reviewId")
+	if reviewId == "" {
+		c.JSON(int(common.APIStatus.BadRequest), &sdk.BaseResponse{
+			Status:  common.APIStatus.BadRequest,
+			Message: "Invalid request",
+		})
+		return
+	}
+	payload.ReviewId = reviewId
+	result, _ := bc.ServiceBookingClient.DeleteReview(ctx, &payload)
+	newResult := util.ConvertResult(result)
+
+	c.JSON(int(newResult.Status), newResult)
+}
+
+func (bc *BookingController) GetReview(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	var payload bookingProto.MessageQueryReview
+	payload.Paginate = &sdk.Pagination{}
+	err := c.BindJSON(&payload)
+	if err != nil {
+		c.JSON(int(common.APIStatus.BadRequest), &sdk.BaseResponse{
+			Status:  common.APIStatus.BadRequest,
+			Message: "Invalid request",
+		})
+		return
+	}
+
+	result, err := bc.ServiceBookingClient.GetReview(ctx, &payload)
+	newResult := util.ConvertResult(result)
+	c.JSON(int(newResult.Status), newResult)
+}
