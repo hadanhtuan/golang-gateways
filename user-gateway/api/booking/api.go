@@ -24,8 +24,10 @@ func NewBookingController(serviceBookingClient bookingProto.BookingServiceClient
 func (bc *BookingController) GetPropertyDetail(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	var payload bookingProto.MsgGetPropertyRequest
+
+	var payload bookingProto.MsgGetProperty
 	propertyId := c.Param("propertyId")
+
 	if propertyId == "" {
 		c.JSON(int(common.APIStatus.BadRequest), &sdk.BaseResponse{
 			Status:  common.APIStatus.BadRequest,
@@ -39,12 +41,15 @@ func (bc *BookingController) GetPropertyDetail(c *gin.Context) {
 
 	c.JSON(int(newResult.Status), newResult)
 }
+
 func (bc *BookingController) GetAllProperty(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	var payload bookingProto.MessageQueryRoom
+
+	var payload bookingProto.MsgQueryProperty
 	payload.Paginate = &sdk.Pagination{}
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
+	
 	if err != nil {
 		c.JSON(int(common.APIStatus.BadRequest), &sdk.BaseResponse{
 			Status:  common.APIStatus.BadRequest,
@@ -78,7 +83,8 @@ func (bc *BookingController) GetAllProperty(c *gin.Context) {
 func (bc *BookingController) CreateProperty(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	var payload bookingProto.MsgCreatePropertyRequest
+
+	var payload bookingProto.MsgCreateProperty
 	err := c.BindJSON(&payload)
 
 	if err != nil {
@@ -92,12 +98,15 @@ func (bc *BookingController) CreateProperty(c *gin.Context) {
 	newResult := util.ConvertResult(result)
 	c.JSON(int(newResult.Status), newResult)
 }
+
 func (bc *BookingController) UpdateProperty(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	var payload bookingProto.MsgUpdatePropertyRequest
+
+	var payload bookingProto.MsgUpdateProperty
 	err := c.BindJSON(&payload)
 	propertyId := c.Param("propertyId")
+
 	if propertyId == "" || err != nil {
 		c.JSON(int(common.APIStatus.BadRequest), &sdk.BaseResponse{
 			Status:  common.APIStatus.BadRequest,
@@ -111,10 +120,11 @@ func (bc *BookingController) UpdateProperty(c *gin.Context) {
 
 	c.JSON(int(newResult.Status), newResult)
 }
+
 func (bc *BookingController) DeleteProperty(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
-	var payload bookingProto.MsgDeletePropertyRequest
+	var payload bookingProto.MsgDeleteProperty
 	propertyId := c.Param("propertyId")
 	if propertyId == "" {
 		c.JSON(int(common.APIStatus.BadRequest), &sdk.BaseResponse{
@@ -134,18 +144,9 @@ func (bc *BookingController) GetBookingDetail(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 	id := c.Param("bookingId")
-	bookingID, err := strconv.ParseInt(id, 10, 64)
-	fmt.Println(err, bookingID)
-	if err != nil {
-		res := &common.APIResponse{
-			Message: "Booking ID is invalid",
-			Status:  common.APIStatus.BadRequest,
-		}
-		c.JSON(int(res.Status), res)
-		return
-	}
-	result, _ := bc.ServiceBookingClient.GetBookingDetail(ctx, &bookingProto.MsgGetBookingRequest{
-		BookingId: bookingID,
+	
+	result, _ := bc.ServiceBookingClient.GetBookingDetail(ctx, &bookingProto.MsgGetBooking{
+		BookingId: id,
 	})
 	fmt.Println(result)
 	newResult := util.ConvertResult(result)
