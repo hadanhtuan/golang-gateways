@@ -78,7 +78,6 @@ func InitRoute(app *sdk.App) error {
 
 	//BOOKING
 	apiBooking.InitRoute(basePath, app)
-	fmt.Println(config.HttpServer.SwaggerPath)
 
 	router.ForwardedByClientIP = true
 	router.SetTrustedProxies([]string{config.HttpServer.TrustedDomain})

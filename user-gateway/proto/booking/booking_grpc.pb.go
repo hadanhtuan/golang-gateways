@@ -25,10 +25,9 @@ const _ = grpc.SupportPackageIsVersion7
 type BookingServiceClient interface {
 	GetBookingDetail(ctx context.Context, in *MsgGetBooking, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
 	// Property
-	GetPropertyDetail(ctx context.Context, in *MsgGetProperty, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
-	GetAllProperty(ctx context.Context, in *MsgQueryProperty, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
-	CreateProperty(ctx context.Context, in *MsgCreateProperty, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
-	UpdateProperty(ctx context.Context, in *MsgUpdateProperty, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
+	GetProperty(ctx context.Context, in *MsgQueryProperty, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
+	CreateProperty(ctx context.Context, in *MsgProperty, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
+	UpdateProperty(ctx context.Context, in *MsgProperty, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
 	DeleteProperty(ctx context.Context, in *MsgDeleteProperty, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
 	// Review
 	CreateReview(ctx context.Context, in *MsgCreateReview, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
@@ -54,25 +53,16 @@ func (c *bookingServiceClient) GetBookingDetail(ctx context.Context, in *MsgGetB
 	return out, nil
 }
 
-func (c *bookingServiceClient) GetPropertyDetail(ctx context.Context, in *MsgGetProperty, opts ...grpc.CallOption) (*sdk.BaseResponse, error) {
+func (c *bookingServiceClient) GetProperty(ctx context.Context, in *MsgQueryProperty, opts ...grpc.CallOption) (*sdk.BaseResponse, error) {
 	out := new(sdk.BaseResponse)
-	err := c.cc.Invoke(ctx, "/bookingService.bookingService/GetPropertyDetail", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/bookingService.bookingService/GetProperty", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *bookingServiceClient) GetAllProperty(ctx context.Context, in *MsgQueryProperty, opts ...grpc.CallOption) (*sdk.BaseResponse, error) {
-	out := new(sdk.BaseResponse)
-	err := c.cc.Invoke(ctx, "/bookingService.bookingService/GetAllProperty", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *bookingServiceClient) CreateProperty(ctx context.Context, in *MsgCreateProperty, opts ...grpc.CallOption) (*sdk.BaseResponse, error) {
+func (c *bookingServiceClient) CreateProperty(ctx context.Context, in *MsgProperty, opts ...grpc.CallOption) (*sdk.BaseResponse, error) {
 	out := new(sdk.BaseResponse)
 	err := c.cc.Invoke(ctx, "/bookingService.bookingService/CreateProperty", in, out, opts...)
 	if err != nil {
@@ -81,7 +71,7 @@ func (c *bookingServiceClient) CreateProperty(ctx context.Context, in *MsgCreate
 	return out, nil
 }
 
-func (c *bookingServiceClient) UpdateProperty(ctx context.Context, in *MsgUpdateProperty, opts ...grpc.CallOption) (*sdk.BaseResponse, error) {
+func (c *bookingServiceClient) UpdateProperty(ctx context.Context, in *MsgProperty, opts ...grpc.CallOption) (*sdk.BaseResponse, error) {
 	out := new(sdk.BaseResponse)
 	err := c.cc.Invoke(ctx, "/bookingService.bookingService/UpdateProperty", in, out, opts...)
 	if err != nil {
@@ -141,10 +131,9 @@ func (c *bookingServiceClient) GetReview(ctx context.Context, in *MessageQueryRe
 type BookingServiceServer interface {
 	GetBookingDetail(context.Context, *MsgGetBooking) (*sdk.BaseResponse, error)
 	// Property
-	GetPropertyDetail(context.Context, *MsgGetProperty) (*sdk.BaseResponse, error)
-	GetAllProperty(context.Context, *MsgQueryProperty) (*sdk.BaseResponse, error)
-	CreateProperty(context.Context, *MsgCreateProperty) (*sdk.BaseResponse, error)
-	UpdateProperty(context.Context, *MsgUpdateProperty) (*sdk.BaseResponse, error)
+	GetProperty(context.Context, *MsgQueryProperty) (*sdk.BaseResponse, error)
+	CreateProperty(context.Context, *MsgProperty) (*sdk.BaseResponse, error)
+	UpdateProperty(context.Context, *MsgProperty) (*sdk.BaseResponse, error)
 	DeleteProperty(context.Context, *MsgDeleteProperty) (*sdk.BaseResponse, error)
 	// Review
 	CreateReview(context.Context, *MsgCreateReview) (*sdk.BaseResponse, error)
@@ -161,16 +150,13 @@ type UnimplementedBookingServiceServer struct {
 func (UnimplementedBookingServiceServer) GetBookingDetail(context.Context, *MsgGetBooking) (*sdk.BaseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBookingDetail not implemented")
 }
-func (UnimplementedBookingServiceServer) GetPropertyDetail(context.Context, *MsgGetProperty) (*sdk.BaseResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPropertyDetail not implemented")
+func (UnimplementedBookingServiceServer) GetProperty(context.Context, *MsgQueryProperty) (*sdk.BaseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProperty not implemented")
 }
-func (UnimplementedBookingServiceServer) GetAllProperty(context.Context, *MsgQueryProperty) (*sdk.BaseResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllProperty not implemented")
-}
-func (UnimplementedBookingServiceServer) CreateProperty(context.Context, *MsgCreateProperty) (*sdk.BaseResponse, error) {
+func (UnimplementedBookingServiceServer) CreateProperty(context.Context, *MsgProperty) (*sdk.BaseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateProperty not implemented")
 }
-func (UnimplementedBookingServiceServer) UpdateProperty(context.Context, *MsgUpdateProperty) (*sdk.BaseResponse, error) {
+func (UnimplementedBookingServiceServer) UpdateProperty(context.Context, *MsgProperty) (*sdk.BaseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateProperty not implemented")
 }
 func (UnimplementedBookingServiceServer) DeleteProperty(context.Context, *MsgDeleteProperty) (*sdk.BaseResponse, error) {
@@ -219,44 +205,26 @@ func _BookingService_GetBookingDetail_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BookingService_GetPropertyDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgGetProperty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BookingServiceServer).GetPropertyDetail(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/bookingService.bookingService/GetPropertyDetail",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BookingServiceServer).GetPropertyDetail(ctx, req.(*MsgGetProperty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _BookingService_GetAllProperty_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _BookingService_GetProperty_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgQueryProperty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BookingServiceServer).GetAllProperty(ctx, in)
+		return srv.(BookingServiceServer).GetProperty(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/bookingService.bookingService/GetAllProperty",
+		FullMethod: "/bookingService.bookingService/GetProperty",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BookingServiceServer).GetAllProperty(ctx, req.(*MsgQueryProperty))
+		return srv.(BookingServiceServer).GetProperty(ctx, req.(*MsgQueryProperty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _BookingService_CreateProperty_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCreateProperty)
+	in := new(MsgProperty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -268,13 +236,13 @@ func _BookingService_CreateProperty_Handler(srv interface{}, ctx context.Context
 		FullMethod: "/bookingService.bookingService/CreateProperty",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BookingServiceServer).CreateProperty(ctx, req.(*MsgCreateProperty))
+		return srv.(BookingServiceServer).CreateProperty(ctx, req.(*MsgProperty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _BookingService_UpdateProperty_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateProperty)
+	in := new(MsgProperty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -286,7 +254,7 @@ func _BookingService_UpdateProperty_Handler(srv interface{}, ctx context.Context
 		FullMethod: "/bookingService.bookingService/UpdateProperty",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BookingServiceServer).UpdateProperty(ctx, req.(*MsgUpdateProperty))
+		return srv.(BookingServiceServer).UpdateProperty(ctx, req.(*MsgProperty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -393,12 +361,8 @@ var BookingService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BookingService_GetBookingDetail_Handler,
 		},
 		{
-			MethodName: "GetPropertyDetail",
-			Handler:    _BookingService_GetPropertyDetail_Handler,
-		},
-		{
-			MethodName: "GetAllProperty",
-			Handler:    _BookingService_GetAllProperty_Handler,
+			MethodName: "GetProperty",
+			Handler:    _BookingService_GetProperty_Handler,
 		},
 		{
 			MethodName: "CreateProperty",
