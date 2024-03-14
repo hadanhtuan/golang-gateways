@@ -25,7 +25,6 @@ func (bc *BookingController) GetProperty(c *gin.Context) {
 	defer cancel()
 
 	var payload bookingProto.MsgQueryProperty
-	payload.Paginate = &sdk.Pagination{}
 	payload.Paginate = &sdk.Pagination{
 		Offset: 0,
 		Limit:  10,
@@ -40,12 +39,6 @@ func (bc *BookingController) GetProperty(c *gin.Context) {
 		return
 	}
 
-	if payload.QueryFields != nil && payload.QueryFields.Id != nil {
-		payload.Paginate = &sdk.Pagination{
-			Offset: 0,
-			Limit:  1,
-		}
-	}
 	result, _ := bc.ServiceBookingClient.GetProperty(ctx, &payload)
 	newResult := util.ConvertResult(result)
 
@@ -56,7 +49,7 @@ func (bc *BookingController) CreateProperty(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	var payload bookingProto.MsgCreateProperty
+	var payload bookingProto.MsgProperty
 	err := c.BindJSON(&payload)
 
 	if err != nil {
@@ -75,7 +68,7 @@ func (bc *BookingController) UpdateProperty(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	var payload bookingProto.MsgUpdateProperty
+	var payload bookingProto.MsgProperty
 	err := c.BindJSON(&payload)
 
 	if err != nil {
@@ -196,13 +189,7 @@ func (bc *BookingController) GetReview(c *gin.Context) {
 		return
 	}
 
-	if payload.QueryFields != nil && payload.QueryFields.Id != nil {
-		payload.Paginate = &sdk.Pagination{
-			Offset: 0,
-			Limit:  1,
-		}
-	}
-	result, err := bc.ServiceBookingClient.GetReview(ctx, &payload)
+	result, _ := bc.ServiceBookingClient.GetReview(ctx, &payload)
 	newResult := util.ConvertResult(result)
 	c.JSON(int(newResult.Status), newResult)
 }

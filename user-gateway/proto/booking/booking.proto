@@ -10,8 +10,8 @@ service bookingService {
   rpc GetBookingDetail(MsgGetBooking) returns (sdk.BaseResponse);
   // Property
   rpc GetProperty(MsgQueryProperty) returns (sdk.BaseResponse);
-  rpc CreateProperty(MsgCreateProperty) returns (sdk.BaseResponse);
-  rpc UpdateProperty(MsgUpdateProperty) returns (sdk.BaseResponse);
+  rpc CreateProperty(MsgProperty) returns (sdk.BaseResponse);
+  rpc UpdateProperty(MsgProperty) returns (sdk.BaseResponse);
   rpc DeleteProperty(MsgDeleteProperty) returns (sdk.BaseResponse);
  
   // Review
@@ -25,35 +25,27 @@ message MsgGetBooking {
   string bookingId = 1;
 }
 
-message MsgCreateProperty {
-  string wardId = 1;
-  string hostId = 2;
-  int32 numBed = 3;
-  int32 numBath = 4;
-  int32 numBedroom = 5;
-  int32 numGuests = 6;
-  bool isGuestFavor = 7;
-  string body = 8;
-  string title = 9;
-  string propertyType = 10;
-  string lat = 11;
-  string long = 12;
-  repeated string amenitiesId = 13;
-}
+message MsgProperty {
+  optional string id = 1;
 
-message MsgUpdateProperty {
-  string propertyId = 1;
-  int32 numGuests = 2;
-  int32 numBed = 3;
-  int32 numBath = 4;
-  int32 numBedroom = 5;
-  bool isGuestFavor = 6;
-  string body = 7;
-  string title = 8;
-  string propertyType = 9;
-  string lat = 11;
-  string long = 12;
-  repeated string amenitiesId = 13;
+  string hostId = 2;
+  string propertyType = 3;
+  float overallRate = 4;
+
+  int32 numGuests = 5;
+  int32 numBeds = 6;
+  int32 numBedrooms = 7;
+  int32 numBathRooms = 8;
+  float price = 9;
+  bool isGuestFavor = 10;
+  string title = 11;
+  string body = 12;
+
+  optional string wardCode = 13;
+  optional string nationCode = 14;
+  optional string lat = 15;
+  optional string long = 16;
+  repeated string amenities = 17;
 }
 
 message MsgDeleteProperty {
