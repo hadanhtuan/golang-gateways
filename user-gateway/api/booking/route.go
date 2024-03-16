@@ -18,7 +18,7 @@ func InitRoute(router *gin.RouterGroup, app *pkg.App) error {
 	bookingGroup.DELETE("/property/:propertyId", bookingController.DeleteProperty)
 	//Review
 	bookingGroup.POST("/review", bookingController.CreateReview)
-	bookingGroup.POST("/review_", bookingController.GetReview)
+	bookingGroup.POST("/review/get", bookingController.GetReview)
 	bookingGroup.PATCH("/review", bookingController.UpdateReview)
 	bookingGroup.DELETE("/review/:reviewId", bookingController.DeleteReview)
 
