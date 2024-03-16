@@ -7,11 +7,13 @@ import "proto/sdk/sdk.proto";
 option go_package = "booking-service/proto/booking";
 
 service bookingService {
+  // Booking
   rpc GetBookingDetail(MsgGetBooking) returns (sdk.BaseResponse);
+
   // Property
   rpc GetProperty(MsgQueryProperty) returns (sdk.BaseResponse);
-  rpc CreateProperty(MsgCreateProperty) returns (sdk.BaseResponse);
-  rpc UpdateProperty(MsgUpdateProperty) returns (sdk.BaseResponse);
+  rpc CreateProperty(MsgProperty) returns (sdk.BaseResponse);
+  rpc UpdateProperty(MsgProperty) returns (sdk.BaseResponse);
   rpc DeleteProperty(MsgDeleteProperty) returns (sdk.BaseResponse);
  
   // Review
@@ -19,41 +21,43 @@ service bookingService {
   rpc UpdateReview(MsgUpdateReview) returns (sdk.BaseResponse);
   rpc DeleteReview(MsgDeleteReview) returns (sdk.BaseResponse);
   rpc GetReview(MessageQueryReview) returns (sdk.BaseResponse);
+
+  // Amenity
+  rpc CreateAmenity(MsgAmenity) returns (sdk.BaseResponse);
+  rpc UpdateAmenity(MsgAmenity) returns (sdk.BaseResponse);
+  rpc DeleteAmenity(MsgId) returns (sdk.BaseResponse);
+  rpc GetAmenity(MessageQueryAmenity) returns (sdk.BaseResponse);
+}
+
+message MsgId {
+  string id = 1;
 }
 
 message MsgGetBooking {
   string bookingId = 1;
 }
 
-message MsgCreateProperty {
-  string wardId = 1;
-  string hostId = 2;
-  int32 numBed = 3;
-  int32 numBath = 4;
-  int32 numBedroom = 5;
-  int32 numGuests = 6;
-  bool isGuestFavor = 7;
-  string body = 8;
-  string title = 9;
-  string propertyType = 10;
-  string lat = 11;
-  string long = 12;
-  repeated string amenitiesId = 13;
-}
+message MsgProperty {
+  optional string id = 1;
 
-message MsgUpdateProperty {
-  string propertyId = 1;
-  int32 numGuests = 2;
-  int32 numBed = 3;
-  int32 numBath = 4;
-  int32 numBedroom = 5;
-  bool isGuestFavor = 6;
-  string body = 7;
-  string title = 8;
-  string propertyType = 9;
-  string lat = 11;
-  string long = 12;
-  repeated string amenitiesId = 13;
+  string hostId = 2;
+  string propertyType = 3;
+  float overallRate = 4;
+
+  int32 numGuests = 5;
+  int32 numBeds = 6;
+  int32 numBedrooms = 7;
+  int32 numBathrooms = 8;
+  float price = 9;
+  bool isGuestFavor = 10;
+  string title = 11;
+  string body = 12;
+
+  optional string wardCode = 13;
+  optional string nationCode = 14;
+  optional string lat = 15;
+  optional string long = 16;
+  repeated string amenities = 17;
 }
 
 message MsgDeleteProperty {
@@ -83,10 +87,10 @@ message OrderProperty {
   optional sdk.Sort createdAt = 1;
 }
 
-//REVIEW
+// review
 message MsgCreateReview{
   string userId = 1;
-  string propertyId = 2;
+  optional string propertyId = 2;
   string parentId = 3;
   float rating = 4;
   string comment = 5;
@@ -111,11 +115,31 @@ message MessageQueryReview {
 }
 
 message QueryReview {
-  string userId = 1;
-  optional string id = 2;
-  optional string name = 3;
+  optional string propertyId = 1;
+  optional int32 rate = 2;
+  optional string id = 3;
+
 }
 
 message OrderReview {
+  optional sdk.Sort createdAt = 1;
+}
+
+// Amenity
+message MsgAmenity{
+  optional string id = 1;
+  optional string name = 2;
+  optional string description = 3;
+  optional string icon = 4;
+}
+
+message MessageQueryAmenity {
+  sdk.Pagination paginate = 1;
+  optional sdk.TimeQuery timeQuery = 2;
+  optional MsgAmenity queryFields = 3;
+  optional OrderAmenity orderFields = 4;
+}
+
+message OrderAmenity {
   optional sdk.Sort createdAt = 1;
 }
