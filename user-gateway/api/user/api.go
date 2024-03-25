@@ -28,7 +28,10 @@ func (uc *UserController) Login(c *gin.Context) {
 	var payload userProto.MsgLogin
 	err := c.BindJSON(&payload)
 	if err != nil {
-		c.JSON(int(common.APIStatus.BadRequest), nil)
+		c.JSON(int(common.APIStatus.BadRequest), &common.APIResponse{
+			Status:  common.APIStatus.BadRequest,
+			Message: "Error parsing body. Error detail " + err.Error(),
+		})
 		return
 	}
 
@@ -54,7 +57,10 @@ func (uc *UserController) Register(c *gin.Context) {
 	err := c.BindJSON(&payload)
 
 	if err != nil {
-		c.JSON(int(common.APIStatus.BadRequest), nil)
+		c.JSON(int(common.APIStatus.BadRequest), &common.APIResponse{
+			Status:  common.APIStatus.BadRequest,
+			Message: "Error parsing body. Error detail " + err.Error(),
+		})
 		return
 	}
 
@@ -78,7 +84,10 @@ func (uc *UserController) RefreshToken(c *gin.Context) {
 	var payload userProto.MsgToken
 	err := c.BindJSON(&payload)
 	if err != nil {
-		c.JSON(int(common.APIStatus.BadRequest), nil)
+		c.JSON(int(common.APIStatus.BadRequest), &common.APIResponse{
+			Status:  common.APIStatus.BadRequest,
+			Message: "Error parsing body. Error detail " + err.Error(),
+		})
 		return
 	}
 
