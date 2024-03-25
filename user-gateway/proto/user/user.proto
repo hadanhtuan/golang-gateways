@@ -7,7 +7,7 @@ import "proto/sdk/sdk.proto";
 option go_package = "user-service/proto/user";
 
 service userService {
-  rpc login(MsgLogin) returns (sdk.BaseResponse);
+  rpc login(MsgLogin) returns (sdk.BaseResponse); 
   rpc register(MsgRegister) returns (sdk.BaseResponse);
   rpc refreshToken(MsgToken) returns (sdk.BaseResponse);
   rpc logout(MsgID) returns (sdk.BaseResponse);
