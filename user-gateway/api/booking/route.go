@@ -1,7 +1,6 @@
 package apiBooking
 
 import (
-	// "user-gateway/internal/model"
 	"github.com/gin-gonic/gin"
 	pkg "github.com/hadanhtuan/go-sdk"
 )
@@ -16,11 +15,18 @@ func InitRoute(router *gin.RouterGroup, app *pkg.App) error {
 	bookingGroup.POST("/property", bookingController.CreateProperty)
 	bookingGroup.PATCH("/property", bookingController.UpdateProperty)
 	bookingGroup.DELETE("/property/:propertyId", bookingController.DeleteProperty)
-	//Review
+
+	// Review
 	bookingGroup.POST("/review", bookingController.CreateReview)
 	bookingGroup.POST("/review/get", bookingController.GetReview)
 	bookingGroup.PATCH("/review", bookingController.UpdateReview)
 	bookingGroup.DELETE("/review/:reviewId", bookingController.DeleteReview)
+
+	// Amenity
+	bookingGroup.POST("/amenity", bookingController.CreateAmenity)
+	bookingGroup.POST("/amenity/get", bookingController.GetAmenity)
+	bookingGroup.PATCH("/amenity", bookingController.UpdateAmenity)
+	bookingGroup.DELETE("/amenity/:amenityId", bookingController.DeleteAmenity)
 
 	return nil
 }

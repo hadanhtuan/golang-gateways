@@ -4,14 +4,18 @@ import (
 	"fmt"
 	"net/http"
 	apiBooking "user-gateway/api/booking"
+	apiSearch "user-gateway/api/search"
 	apiUser "user-gateway/api/user"
+
+	protoBooking "user-gateway/proto/booking"
+	protoSearch "user-gateway/proto/search"
+	protoUser "user-gateway/proto/user"
+
 	"user-gateway/internal/middleware"
-	bookingService "user-gateway/proto/booking"
-	userService "user-gateway/proto/user"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	sdk "github.com/hadanhtuan/go-sdk"
+	"github.com/hadanhtuan/go-sdk"
 	grpcClient "github.com/hadanhtuan/go-sdk/client"
 	"github.com/hadanhtuan/go-sdk/common"
 )
@@ -29,24 +33,37 @@ func InitGRPC(app *sdk.App) error {
 		app.Config.GRPC.BookingServiceHost,
 		app.Config.GRPC.BookingServicePort,
 	)
-	fmt.Println(userServiceHost)
+	searchServiceHost := fmt.Sprintf(
+		"%s:%s",
+		app.Config.GRPC.SearchServiceHost,
+		app.Config.GRPC.SearchServicePort,
+	)
+
 	userConn, err := grpcClient.NewGRPCClientConn(userServiceHost)
 	if err != nil {
-		return fmt.Errorf("Failed to connect to %s: %v", userServiceHost, err)
+		return fmt.Errorf("failed to connect to %s: %v", userServiceHost, err)
 	}
 	bookingConn, err := grpcClient.NewGRPCClientConn(bookingServiceHost)
 	if err != nil {
-		return fmt.Errorf("Failed to connect to %s: %v", bookingServiceHost, err)
+		return fmt.Errorf("failed to connect to %s: %v", bookingServiceHost, err)
+	}
+	searchConn, err := grpcClient.NewGRPCClientConn(searchServiceHost)
+	if err != nil {
+		return fmt.Errorf("failed to connect to %s: %v", searchServiceHost, err)
 	}
 
 	// TODO: Bug if defer in here: defer userConn.Close()
 	// USER
-	userServiceClient := userService.NewUserServiceClient(userConn)
+	userServiceClient := protoUser.NewUserServiceClient(userConn)
 	app.Handler[app.Config.GRPC.UserServicePort] = apiUser.NewUserController(userServiceClient)
 
 	//BOOKING
-	bookingServiceClient := bookingService.NewBookingServiceClient(bookingConn)
+	bookingServiceClient := protoBooking.NewBookingServiceClient(bookingConn)
 	app.Handler[app.Config.GRPC.BookingServicePort] = apiBooking.NewBookingController(bookingServiceClient)
+
+	//SEARCH
+	searchServiceClient := protoSearch.NewSearchServiceClient(searchConn)
+	app.Handler[app.Config.GRPC.SearchServicePort] = apiSearch.NewSearchController(searchServiceClient)
 
 	fmt.Println("Server down")
 	return nil
@@ -78,6 +95,9 @@ func InitRoute(app *sdk.App) error {
 
 	//BOOKING
 	apiBooking.InitRoute(basePath, app)
+
+	//SEARCH
+	apiSearch.InitRoute(basePath, app)
 
 	router.ForwardedByClientIP = true
 	router.SetTrustedProxies([]string{config.HttpServer.TrustedDomain})
