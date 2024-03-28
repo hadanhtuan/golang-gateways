@@ -15,7 +15,7 @@ run:
 
 #Run service
 run-service:
-	nodemon --exec "go run" ./cmd/main.go
+	nodemon --exec "go run" ./cmd/main.go --signal SIGTERM
 
 # GRPC
 gen-sdk:
@@ -28,15 +28,20 @@ gen-user:
 				--go-grpc_out=. --go-grpc_opt=paths=source_relative \
 				proto/user/*.proto
 
-gen-booking:
+gen-property:
 	@protoc --go_out=. --go_opt=paths=source_relative \
 				--go-grpc_out=. --go-grpc_opt=paths=source_relative \
-				proto/booking/*.proto
+				proto/property/*.proto
 
 gen-search:
 	@protoc --go_out=. --go_opt=paths=source_relative \
 				--go-grpc_out=. --go-grpc_opt=paths=source_relative \
 				proto/search/*.proto
 
+gen-payment:
+	@protoc --go_out=. --go_opt=paths=source_relative \
+				--go-grpc_out=. --go-grpc_opt=paths=source_relative \
+				proto/payment/*.proto
 
-gen-all: gen-sdk gen-user gen-booking gen-search
+
+gen-all: gen-sdk gen-user gen-property gen-search gen-payment
