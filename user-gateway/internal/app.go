@@ -3,11 +3,13 @@ package internal
 import (
 	"fmt"
 	"net/http"
-	apiBooking "user-gateway/api/booking"
+	apiPayment "user-gateway/api/payment"
+	apiProperty "user-gateway/api/property"
 	apiSearch "user-gateway/api/search"
 	apiUser "user-gateway/api/user"
 
-	protoBooking "user-gateway/proto/booking"
+	protoPayment "user-gateway/proto/payment"
+	protoProperty "user-gateway/proto/property"
 	protoSearch "user-gateway/proto/search"
 	protoUser "user-gateway/proto/user"
 
@@ -23,33 +25,42 @@ import (
 func InitGRPC(app *sdk.App) error {
 	app.Handler = map[string]interface{}{}
 
-	userServiceHost := fmt.Sprintf(
+	userServiceUrl := fmt.Sprintf(
 		"%s:%s",
 		app.Config.GRPC.UserServiceHost,
 		app.Config.GRPC.UserServicePort,
 	)
-	bookingServiceHost := fmt.Sprintf(
+	bookingServiceUrl := fmt.Sprintf(
 		"%s:%s",
-		app.Config.GRPC.BookingServiceHost,
-		app.Config.GRPC.BookingServicePort,
+		app.Config.GRPC.PropertyServiceHost,
+		app.Config.GRPC.PropertyServicePort,
 	)
-	searchServiceHost := fmt.Sprintf(
+	searchServiceUrl := fmt.Sprintf(
 		"%s:%s",
 		app.Config.GRPC.SearchServiceHost,
 		app.Config.GRPC.SearchServicePort,
 	)
+	paymentServiceHost := fmt.Sprintf(
+		"%s:%s",
+		app.Config.GRPC.PaymentServiceHost,
+		app.Config.GRPC.PaymentServicePort,
+	)
 
-	userConn, err := grpcClient.NewGRPCClientConn(userServiceHost)
+	userConn, err := grpcClient.NewGRPCClientConn(userServiceUrl)
 	if err != nil {
-		return fmt.Errorf("failed to connect to %s: %v", userServiceHost, err)
+		return fmt.Errorf("failed to connect to %s: %v", userServiceUrl, err)
 	}
-	bookingConn, err := grpcClient.NewGRPCClientConn(bookingServiceHost)
+	propertyConn, err := grpcClient.NewGRPCClientConn(bookingServiceUrl)
 	if err != nil {
-		return fmt.Errorf("failed to connect to %s: %v", bookingServiceHost, err)
+		return fmt.Errorf("failed to connect to %s: %v", bookingServiceUrl, err)
 	}
-	searchConn, err := grpcClient.NewGRPCClientConn(searchServiceHost)
+	searchConn, err := grpcClient.NewGRPCClientConn(searchServiceUrl)
 	if err != nil {
-		return fmt.Errorf("failed to connect to %s: %v", searchServiceHost, err)
+		return fmt.Errorf("failed to connect to %s: %v", searchServiceUrl, err)
+	}
+	paymentConn, err := grpcClient.NewGRPCClientConn(paymentServiceHost)
+	if err != nil {
+		return fmt.Errorf("failed to connect to %s: %v", paymentServiceHost, err)
 	}
 
 	// TODO: Bug if defer in here: defer userConn.Close()
@@ -58,12 +69,16 @@ func InitGRPC(app *sdk.App) error {
 	app.Handler[app.Config.GRPC.UserServicePort] = apiUser.NewUserController(userServiceClient)
 
 	//BOOKING
-	bookingServiceClient := protoBooking.NewBookingServiceClient(bookingConn)
-	app.Handler[app.Config.GRPC.BookingServicePort] = apiBooking.NewBookingController(bookingServiceClient)
+	propertyServiceClient := protoProperty.NewPropertyServiceClient(propertyConn)
+	app.Handler[app.Config.GRPC.PropertyServicePort] = apiProperty.NewPropertyController(propertyServiceClient)
 
 	//SEARCH
 	searchServiceClient := protoSearch.NewSearchServiceClient(searchConn)
 	app.Handler[app.Config.GRPC.SearchServicePort] = apiSearch.NewSearchController(searchServiceClient)
+
+	//PAYMENT
+	paymentServiceClient := protoPayment.NewPaymentServiceClient(paymentConn)
+	app.Handler[app.Config.GRPC.PaymentServicePort] = apiPayment.NewPaymentController(paymentServiceClient)
 
 	fmt.Println("Server down")
 	return nil
@@ -94,10 +109,13 @@ func InitRoute(app *sdk.App) error {
 	apiUser.InitRoute(basePath, app)
 
 	//BOOKING
-	apiBooking.InitRoute(basePath, app)
+	apiProperty.InitRoute(basePath, app)
 
 	//SEARCH
 	apiSearch.InitRoute(basePath, app)
+
+	//PAYMENT
+	apiPayment.InitRoute(basePath, app)
 
 	router.ForwardedByClientIP = true
 	router.SetTrustedProxies([]string{config.HttpServer.TrustedDomain})

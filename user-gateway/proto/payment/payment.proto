@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package paymentService;
+
+import "proto/sdk/sdk.proto";
+
+option go_package = "payment-service/proto/payment";
+
+service paymentService {
+  rpc CreatePaymentIntent(MsgCreatePaymentIntent) returns (sdk.BaseResponse);
+  rpc CheckoutSession(MsgId) returns (sdk.BaseResponse);
+  rpc HookPayment(MsgPaymentIntent) returns (sdk.BaseResponse);
+
+}
+
+message MsgId {
+  string id = 1;
+}
+
+message MsgCreatePaymentIntent {
+  string currency = 1;
+  int64 amount = 2;
+  string propertyId = 3;
+  string userId = 4;
+  string bookingId = 5;
+  string receiptEmail = 6;
+}
+
+message MsgPaymentIntent {
+  string id = 1;
+
+  string stripeId = 2;
+  string propertyId = 3;
+  string userId = 4;
+  string bookingId = 5;
+
+  int64 amount = 6;
+  string currency = 7;
+  string event = 8;
+  string paymentMethod = 9;  
+  string status = 10;
+  string receiptEmail = 11;
+
+  optional int64 canceledAt = 12;
+  optional string description = 13;
+  
+}
