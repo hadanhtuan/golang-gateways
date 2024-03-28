@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-package bookingService;
+package propertyService;
 
 import "proto/sdk/sdk.proto";
 
-option go_package = "booking-service/proto/booking";
+option go_package = "property-service/proto/property";
 
-service bookingService {
+service propertyService {
   // Booking
   rpc GetBookingDetail(MsgGetBooking) returns (sdk.BaseResponse);
 
@@ -15,7 +15,7 @@ service bookingService {
   rpc CreateProperty(MsgProperty) returns (sdk.BaseResponse);
   rpc UpdateProperty(MsgProperty) returns (sdk.BaseResponse);
   rpc DeleteProperty(MsgDeleteProperty) returns (sdk.BaseResponse);
- 
+
   // Review
   rpc CreateReview(MsgCreateReview) returns (sdk.BaseResponse);
   rpc UpdateReview(MsgUpdateReview) returns (sdk.BaseResponse);
@@ -27,6 +27,11 @@ service bookingService {
   rpc UpdateAmenity(MsgAmenity) returns (sdk.BaseResponse);
   rpc DeleteAmenity(MsgId) returns (sdk.BaseResponse);
   rpc GetAmenity(MessageQueryAmenity) returns (sdk.BaseResponse);
+
+    // Favorite
+    rpc CreateFavorite(MsgFavorite) returns (sdk.BaseResponse);
+    rpc DeleteFavorite(MsgId) returns (sdk.BaseResponse);
+    rpc GetFavorite(MessageQueryFavorite) returns (sdk.BaseResponse);
 }
 
 message MsgId {
@@ -34,7 +39,7 @@ message MsgId {
 }
 
 message MsgGetBooking {
-  string bookingId = 1;
+  string propertyId = 1;
 }
 
 message MsgProperty {
@@ -136,10 +141,10 @@ message OrderReview {
 
 // Amenity
 message MsgAmenity{
-  optional string id = 1;
-  optional string name = 2;
-  optional string description = 3;
-  optional string icon = 4;
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string icon = 4;
 }
 
 message MessageQueryAmenity {
@@ -150,5 +155,33 @@ message MessageQueryAmenity {
 }
 
 message OrderAmenity {
+  optional sdk.Sort createdAt = 1;
+}
+
+// Booking
+
+message MsgBooking{
+  string id = 1;
+  string propertyId = 2;
+  string userId = 3;
+  string icon = 4;
+}
+
+
+// Favorite
+message MsgFavorite{
+  string id = 1;
+  string userId = 2;
+  string propertyId = 3;
+}
+
+message MessageQueryFavorite {
+  sdk.Pagination paginate = 1;
+  optional sdk.TimeQuery timeQuery = 2;
+  optional MsgFavorite queryFields = 3;
+  optional OrderFavorite orderFields = 4;
+}
+
+message OrderFavorite {
   optional sdk.Sort createdAt = 1;
 }
