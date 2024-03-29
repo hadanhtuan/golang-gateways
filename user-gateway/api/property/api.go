@@ -331,3 +331,22 @@ func (bc *PropertyController) GetFavorite(c *gin.Context) {
 	newResult := util.ConvertResult(result)
 	c.JSON(int(newResult.Status), newResult)
 }
+
+
+func (bc *PropertyController) CreateBooking(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	var payload propertyProto.MsgBooking
+	err := c.BindJSON(&payload)
+
+	if err != nil {
+		c.JSON(int(common.APIStatus.BadRequest), &common.APIResponse{
+			Status:  common.APIStatus.BadRequest,
+			Message: "Error parsing body. Error detail " + err.Error(),
+		})
+		return
+	}
+	result, _ := bc.ServicePropertyClient.CreateBooking(ctx, &payload)
+	newResult := util.ConvertResult(result)
+	c.JSON(int(newResult.Status), newResult)
+}

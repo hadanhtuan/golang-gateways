@@ -7,14 +7,16 @@ import "proto/sdk/sdk.proto";
 option go_package = "property-service/proto/property";
 
 service propertyService {
-  // Booking
-  rpc GetBookingDetail(MsgGetBooking) returns (sdk.BaseResponse);
-
   // Property
   rpc GetProperty(MsgQueryProperty) returns (sdk.BaseResponse);
   rpc CreateProperty(MsgProperty) returns (sdk.BaseResponse);
   rpc UpdateProperty(MsgProperty) returns (sdk.BaseResponse);
   rpc DeleteProperty(MsgDeleteProperty) returns (sdk.BaseResponse);
+
+  // Booking
+  rpc GetBooking(MessageQueryBooking) returns (sdk.BaseResponse);
+  rpc CreateBooking(MsgBooking) returns (sdk.BaseResponse);
+  rpc CancelBooking(MsgBooking) returns (sdk.BaseResponse);
 
   // Review
   rpc CreateReview(MsgCreateReview) returns (sdk.BaseResponse);
@@ -28,10 +30,10 @@ service propertyService {
   rpc DeleteAmenity(MsgId) returns (sdk.BaseResponse);
   rpc GetAmenity(MessageQueryAmenity) returns (sdk.BaseResponse);
 
-    // Favorite
-    rpc CreateFavorite(MsgFavorite) returns (sdk.BaseResponse);
-    rpc DeleteFavorite(MsgId) returns (sdk.BaseResponse);
-    rpc GetFavorite(MessageQueryFavorite) returns (sdk.BaseResponse);
+  // Favorite
+  rpc CreateFavorite(MsgFavorite) returns (sdk.BaseResponse);
+  rpc DeleteFavorite(MsgId) returns (sdk.BaseResponse);
+  rpc GetFavorite(MessageQueryFavorite) returns (sdk.BaseResponse);
 }
 
 message MsgId {
@@ -68,11 +70,11 @@ message MsgProperty {
   optional string lat = 18;
   optional string long = 19;
 
-  float nightPrice = 20;
-  float serviceFee = 21;
+  double nightPrice = 20;
+  double serviceFee = 21;
+  double taxPercent = 22;
 
-
-  repeated MsgAmenity amenities = 22;
+  repeated MsgAmenity amenities = 23;
 }
 
 message MsgDeleteProperty {
@@ -164,7 +166,27 @@ message MsgBooking{
   string id = 1;
   string propertyId = 2;
   string userId = 3;
-  string icon = 4;
+  int32 checkInDate = 4;
+  int32 checkoutDate = 5;
+  int32 guestNumber = 6;
+  int32 childNumber = 7;
+  int32 babyNumber = 8;
+  int32 petNumber = 9;
+  int32 nightNumber = 10;
+  double totalPrice = 11;
+  double totalPriceBeforeTax = 12;
+  double taxFee = 13;
+}
+
+message MessageQueryBooking {
+  sdk.Pagination paginate = 1;
+  optional sdk.TimeQuery timeQuery = 2;
+  optional MsgBooking queryFields = 3;
+  optional OrderBooking orderFields = 4;
+}
+
+message OrderBooking {
+  optional sdk.Sort createdAt = 1;
 }
 
 
