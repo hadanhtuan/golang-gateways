@@ -11,7 +11,7 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
-	sdk "user-gateway/proto/sdk"
+	sdk "admin-gateway/proto/sdk"
 )
 
 const (

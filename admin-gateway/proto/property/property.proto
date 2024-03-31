@@ -15,7 +15,6 @@ service propertyService {
 
   // Property
   rpc GetProperty(MsgQueryProperty) returns (sdk.BaseResponse);
-  rpc CountPropertyStatus(MsgProperty) returns (sdk.BaseResponse);
   rpc CreateProperty(MsgProperty) returns (sdk.BaseResponse);
   rpc UpdateProperty(MsgProperty) returns (sdk.BaseResponse);
   rpc DeleteProperty(MsgDeleteProperty) returns (sdk.BaseResponse);
@@ -76,8 +75,8 @@ message MsgProperty {
   double serviceFee = 21;
   double taxPercent = 22;
 
-  optional string status = 23;
-  repeated MsgAmenity amenities = 25;
+
+  repeated MsgAmenity amenities = 23;
 }
 
 message MsgDeleteProperty {

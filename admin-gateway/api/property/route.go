@@ -2,16 +2,15 @@ package apiProperty
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hadanhtuan/go-sdk"
+	pkg "github.com/hadanhtuan/go-sdk"
 )
 
-func InitRoute(router *gin.RouterGroup, app *sdk.App) error {
+func InitRoute(router *gin.RouterGroup, app *pkg.App) error {
 	propertyController := app.Handler[app.Config.GRPC.PropertyServicePort].(*PropertyController)
 
 	propertyGroup := router.Group("/property")
 	// Property
 	propertyGroup.POST("/get", propertyController.GetProperty)
-	propertyGroup.POST("/count-by-status", propertyController.CountPropertyStatus)
 	propertyGroup.POST("", propertyController.CreateProperty)
 	propertyGroup.PATCH("", propertyController.UpdateProperty)
 	propertyGroup.DELETE("/:propertyId", propertyController.DeleteProperty)
