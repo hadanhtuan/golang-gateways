@@ -5,9 +5,8 @@ import (
 	"encoding/json"
 	"strings"
 	"time"
-	"user-gateway/internal/util"
-	userProto "user-gateway/proto/user"
-	protoSdk "user-gateway/proto/sdk"
+	"admin-gateway/internal/util"
+	userProto "admin-gateway/proto/user"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hadanhtuan/go-sdk"
@@ -26,7 +25,7 @@ func (uc *UserController) Login(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	var payload userProto.MsgUser
+	var payload userProto.MsgLogin
 	err := c.BindJSON(&payload)
 	if err != nil {
 		c.JSON(int(common.APIStatus.BadRequest), &common.APIResponse{
@@ -54,7 +53,7 @@ func (uc *UserController) Register(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	var payload userProto.MsgUser
+	var payload userProto.MsgRegister
 	err := c.BindJSON(&payload)
 
 	if err != nil {
@@ -129,34 +128,6 @@ func (uc *UserController) GetProfile(c *gin.Context) {
 	result, _ := uc.ServiceClient.GetProfile(ctx, &payload)
 
 	newResult := util.ConvertResult(result)
-	c.JSON(int(newResult.Status), newResult)
-}
-
-func (uc *UserController) GetUsers(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
-	var payload userProto.MsgQueryUser
-	err := c.BindJSON(&payload)
-
-	if err != nil {
-		c.JSON(int(common.APIStatus.BadRequest), &common.APIResponse{
-			Status:  common.APIStatus.BadRequest,
-			Message: "Error parsing body. Error detail " + err.Error(),
-		})
-		return
-	}
-
-	if payload.Paginate == nil {
-		payload.Paginate = &protoSdk.Pagination{
-			Offset: 0,
-			Limit:  10,
-		}
-	}
-
-	result, _ := uc.ServiceClient.GetUsers(ctx, &payload)
-	newResult := util.ConvertResult(result)
-
 	c.JSON(int(newResult.Status), newResult)
 }
 
