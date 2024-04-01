@@ -8,6 +8,7 @@ option go_package = "user-service/proto/user";
 
 service userService {
   rpc login(MsgUser) returns (sdk.BaseResponse);
+  rpc updateUser(MsgUser) returns (sdk.BaseResponse);
   rpc getUsers(MsgQueryUser) returns (sdk.BaseResponse);
   rpc register(MsgUser) returns (sdk.BaseResponse);
   rpc refreshToken(MsgToken) returns (sdk.BaseResponse);

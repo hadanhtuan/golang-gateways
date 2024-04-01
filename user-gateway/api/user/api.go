@@ -78,6 +78,28 @@ func (uc *UserController) Register(c *gin.Context) {
 	c.JSON(int(newResult.Status), newResult)
 }
 
+func (uc *UserController) UpdateUser(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	var payload userProto.MsgUser
+	err := c.BindJSON(&payload)
+
+	if err != nil {
+		c.JSON(int(common.APIStatus.BadRequest), &common.APIResponse{
+			Status:  common.APIStatus.BadRequest,
+			Message: "Error parsing body. Error detail " + err.Error(),
+		})
+		return
+	}
+
+
+	result, _ := uc.ServiceClient.UpdateUser(ctx, &payload)
+
+	newResult := util.ConvertResult(result)
+	c.JSON(int(newResult.Status), newResult)
+}
+
 func (uc *UserController) RefreshToken(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
