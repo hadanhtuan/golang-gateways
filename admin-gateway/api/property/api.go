@@ -3,9 +3,9 @@ package apiProperty
 import (
 	"context"
 	"time"
-	"user-gateway/internal/util"
-	propertyProto "user-gateway/proto/property"
-	"user-gateway/proto/sdk"
+	"admin-gateway/internal/util"
+	propertyProto "admin-gateway/proto/property"
+	"admin-gateway/proto/sdk"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hadanhtuan/go-sdk/common"
@@ -62,25 +62,6 @@ func (bc *PropertyController) CreateProperty(c *gin.Context) {
 		return
 	}
 	result, _ := bc.ServicePropertyClient.CreateProperty(ctx, &payload)
-	newResult := util.ConvertResult(result)
-	c.JSON(int(newResult.Status), newResult)
-}
-
-func (bc *PropertyController) CountPropertyStatus(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
-	var payload propertyProto.MsgProperty
-	err := c.BindJSON(&payload)
-
-	if err != nil {
-		c.JSON(int(common.APIStatus.BadRequest), &common.APIResponse{
-			Status:  common.APIStatus.BadRequest,
-			Message: "Error parsing body. Error detail " + err.Error(),
-		})
-		return
-	}
-	result, _ := bc.ServicePropertyClient.CountPropertyStatus(ctx, &payload)
 	newResult := util.ConvertResult(result)
 	c.JSON(int(newResult.Status), newResult)
 }
