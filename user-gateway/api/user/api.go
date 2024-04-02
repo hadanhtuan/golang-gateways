@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 	"user-gateway/internal/util"
-	userProto "user-gateway/proto/user"
 	protoSdk "user-gateway/proto/sdk"
+	userProto "user-gateway/proto/user"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hadanhtuan/go-sdk"
@@ -93,7 +93,6 @@ func (uc *UserController) UpdateUser(c *gin.Context) {
 		return
 	}
 
-
 	result, _ := uc.ServiceClient.UpdateUser(ctx, &payload)
 
 	newResult := util.ConvertResult(result)
@@ -124,13 +123,13 @@ func (uc *UserController) Logout(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	var payload userProto.MsgID
+	var payload userProto.MsgUser
 
 	ginPayload, _ := c.Get(common.JWT_PAYLOAD)
 	jwtPayload := ginPayload.(*common.JWTPayload)
 
-	payload.Id = jwtPayload.LoginLogID //TODO: logout by login log ID
-
+	payload.Id = jwtPayload.UserID //TODO: logout by login userId and deviceId
+	payload.DeviceId = jwtPayload.DeviceID
 	result, _ := uc.ServiceClient.Logout(ctx, &payload)
 
 	newResult := util.ConvertResult(result)
@@ -201,7 +200,7 @@ func (uc *UserController) AuthorizeRequest() gin.HandlerFunc {
 		jwt := ExtractJWTHeader(token)
 
 		result, err := uc.ServiceClient.VerifyToken(ctx, &userProto.MsgToken{
-			Token: jwt,
+			AccessToken: jwt,
 		})
 
 		if result.Status == common.APIStatus.Unauthorized || err != nil {
