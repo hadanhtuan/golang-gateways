@@ -28,7 +28,7 @@ type UserServiceClient interface {
 	GetUsers(ctx context.Context, in *MsgQueryUser, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
 	Register(ctx context.Context, in *MsgUser, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
 	RefreshToken(ctx context.Context, in *MsgToken, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
-	Logout(ctx context.Context, in *MsgID, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
+	Logout(ctx context.Context, in *MsgUser, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
 	GetProfile(ctx context.Context, in *MsgID, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
 	VerifyToken(ctx context.Context, in *MsgToken, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
 }
@@ -86,7 +86,7 @@ func (c *userServiceClient) RefreshToken(ctx context.Context, in *MsgToken, opts
 	return out, nil
 }
 
-func (c *userServiceClient) Logout(ctx context.Context, in *MsgID, opts ...grpc.CallOption) (*sdk.BaseResponse, error) {
+func (c *userServiceClient) Logout(ctx context.Context, in *MsgUser, opts ...grpc.CallOption) (*sdk.BaseResponse, error) {
 	out := new(sdk.BaseResponse)
 	err := c.cc.Invoke(ctx, "/userService.userService/logout", in, out, opts...)
 	if err != nil {
@@ -122,7 +122,7 @@ type UserServiceServer interface {
 	GetUsers(context.Context, *MsgQueryUser) (*sdk.BaseResponse, error)
 	Register(context.Context, *MsgUser) (*sdk.BaseResponse, error)
 	RefreshToken(context.Context, *MsgToken) (*sdk.BaseResponse, error)
-	Logout(context.Context, *MsgID) (*sdk.BaseResponse, error)
+	Logout(context.Context, *MsgUser) (*sdk.BaseResponse, error)
 	GetProfile(context.Context, *MsgID) (*sdk.BaseResponse, error)
 	VerifyToken(context.Context, *MsgToken) (*sdk.BaseResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
@@ -147,7 +147,7 @@ func (UnimplementedUserServiceServer) Register(context.Context, *MsgUser) (*sdk.
 func (UnimplementedUserServiceServer) RefreshToken(context.Context, *MsgToken) (*sdk.BaseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RefreshToken not implemented")
 }
-func (UnimplementedUserServiceServer) Logout(context.Context, *MsgID) (*sdk.BaseResponse, error) {
+func (UnimplementedUserServiceServer) Logout(context.Context, *MsgUser) (*sdk.BaseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
 }
 func (UnimplementedUserServiceServer) GetProfile(context.Context, *MsgID) (*sdk.BaseResponse, error) {
@@ -260,7 +260,7 @@ func _UserService_RefreshToken_Handler(srv interface{}, ctx context.Context, dec
 }
 
 func _UserService_Logout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgID)
+	in := new(MsgUser)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -272,7 +272,7 @@ func _UserService_Logout_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/userService.userService/logout",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).Logout(ctx, req.(*MsgID))
+		return srv.(UserServiceServer).Logout(ctx, req.(*MsgUser))
 	}
 	return interceptor(ctx, in, info, handler)
 }
