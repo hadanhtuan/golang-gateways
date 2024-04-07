@@ -12,7 +12,7 @@ service userService {
   rpc getUsers(MsgQueryUser) returns (sdk.BaseResponse);
   rpc register(MsgUser) returns (sdk.BaseResponse);
   rpc refreshToken(MsgToken) returns (sdk.BaseResponse);
-  rpc logout(MsgID) returns (sdk.BaseResponse);
+  rpc logout(MsgUser) returns (sdk.BaseResponse);
   rpc getProfile(MsgID) returns (sdk.BaseResponse);
   rpc verifyToken(MsgToken) returns (sdk.BaseResponse);
 }
@@ -35,7 +35,11 @@ message MsgUser {
 }
 
 message MsgToken {
-  string token = 1;
+  string accessToken = 1;
+  string refreshToken = 2;
+  string deviceId = 3;
+  string userId = 4;
+
 }
 
 message MsgID {
