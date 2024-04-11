@@ -3,7 +3,6 @@ package apiPayment
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"time"
@@ -100,7 +99,6 @@ func (pc *PaymentController) HandleHook(c *gin.Context) {
 			Status:        string(paymentIntent.Status),
 			// Event:   paymentIntent.Source.SourceObject.Type,
 		}
-		fmt.Println(payload.BookingId)
 		result, _ := pc.ServicePaymentClient.HookPayment(ctx, &payload)
 		newResult := util.ConvertResult(result)
 		c.JSON(int(newResult.Status), newResult)
