@@ -3,11 +3,12 @@ package apiPayment
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"time"
 	"user-gateway/internal/util"
-	paymentProto "user-gateway/proto/payment"
+	protoPayment "user-gateway/proto/payment"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hadanhtuan/go-sdk/common"
@@ -17,10 +18,10 @@ import (
 )
 
 type PaymentController struct {
-	ServicePaymentClient paymentProto.PaymentServiceClient
+	ServicePaymentClient protoPayment.PaymentServiceClient
 }
 
-func NewPaymentController(servicePaymentClient paymentProto.PaymentServiceClient) *PaymentController {
+func NewPaymentController(servicePaymentClient protoPayment.PaymentServiceClient) *PaymentController {
 	return &PaymentController{ServicePaymentClient: servicePaymentClient}
 }
 
@@ -28,7 +29,7 @@ func (pc *PaymentController) CreatePaymentIntent(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	var payload paymentProto.MsgCreatePaymentIntent
+	var payload protoPayment.MsgCreatePaymentIntent
 	err := c.BindJSON(&payload)
 
 	if err != nil {
@@ -86,7 +87,7 @@ func (pc *PaymentController) HandleHook(c *gin.Context) {
 			return
 		}
 
-		payload := paymentProto.MsgPaymentIntent{
+		payload := protoPayment.MsgPaymentIntent{
 			StripeId:      paymentIntent.ID,
 			BookingId:     paymentIntent.Metadata["bookingId"],
 			PropertyId:    paymentIntent.Metadata["propertyId"],
@@ -99,6 +100,7 @@ func (pc *PaymentController) HandleHook(c *gin.Context) {
 			Status:        string(paymentIntent.Status),
 			// Event:   paymentIntent.Source.SourceObject.Type,
 		}
+		fmt.Println(payload.BookingId)
 		result, _ := pc.ServicePaymentClient.HookPayment(ctx, &payload)
 		newResult := util.ConvertResult(result)
 		c.JSON(int(newResult.Status), newResult)
