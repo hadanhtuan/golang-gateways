@@ -2,7 +2,6 @@ package apiSearch
 
 import (
 	"context"
-	"fmt"
 	"time"
 	"user-gateway/internal/util"
 	"user-gateway/proto/sdk"
@@ -74,7 +73,6 @@ func (bc *SearchController) SearchByIP(c *gin.Context) {
 	}
 
 	result, _ := bc.ServiceSearchClient.ListPropertyByIP(ctx, &payload)
-	fmt.Println(result)
 	newResult := util.ConvertResult(result)
 
 	c.JSON(int(newResult.Status), newResult)
