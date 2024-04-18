@@ -32,10 +32,10 @@ service propertyService {
   rpc DeleteAmenity(MsgId) returns (sdk.BaseResponse);
   rpc GetAmenity(MsgQueryAmenity) returns (sdk.BaseResponse);
 
-    // Favorite
-    rpc CreateFavorite(MsgFavorite) returns (sdk.BaseResponse);
-    rpc DeleteFavorite(MsgId) returns (sdk.BaseResponse);
-    rpc GetFavorite(MsgQueryFavorite) returns (sdk.BaseResponse);
+  // Favorite
+  rpc CreateFavorite(MsgFavorite) returns (sdk.BaseResponse);
+  rpc DeleteFavorite(MsgId) returns (sdk.BaseResponse);
+  rpc GetFavorite(MsgQueryFavorite) returns (sdk.BaseResponse);
 }
 
 message MsgId {
@@ -78,6 +78,9 @@ message MsgProperty {
 
   optional string status = 23;
   repeated MsgAmenity amenities = 25;
+
+  optional string introCover = 26;
+  repeated string introImages = 27;
 }
 
 message MsgDeleteProperty {
@@ -92,7 +95,7 @@ message MsgGetProperty {
 message MsgQueryProperty {
   sdk.Pagination paginate = 1;
   optional sdk.TimeQuery timeQuery = 2;
-  optional QueryProperty queryFields = 3;
+  optional MsgProperty queryFields = 3;
   optional OrderProperty orderFields = 4;
 }
 
