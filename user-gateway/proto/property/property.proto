@@ -51,6 +51,7 @@ message MsgProperty {
 
   string hostId = 2;
   string propertyType = 3;
+  string propertyStatus = 40;
   float overallRate = 4;
 
   int32 maxGuests = 5;
@@ -67,6 +68,7 @@ message MsgProperty {
   string title = 14;
   string body = 15;
 
+  optional string address = 41;
   optional string cityCode = 16;
   optional string nationCode = 17;
   optional string lat = 18;
