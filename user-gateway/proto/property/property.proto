@@ -50,8 +50,9 @@ message MsgProperty {
   optional string id = 1;
 
   string hostId = 2;
+  string hostFirstName = 44;
+  string hostLastName = 42;
   string propertyType = 3;
-  string propertyStatus = 40;
   float overallRate = 4;
 
   int32 maxGuests = 5;
@@ -83,6 +84,12 @@ message MsgProperty {
 
   optional string introCover = 26;
   repeated string introImages = 27;
+
+  optional string bathroomCover = 45;
+  repeated string bathroomImages = 46;
+
+  optional string otherCover = 47;
+  repeated string otherImages = 48;
 }
 
 message MsgDeleteProperty {
