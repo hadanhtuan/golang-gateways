@@ -8,6 +8,5 @@ STEP TO RUN PROJECT
 
 5. gen proto
 make -f makefile (choose option 2)
-
 6. run service
 make -f makefile (choose option 1)

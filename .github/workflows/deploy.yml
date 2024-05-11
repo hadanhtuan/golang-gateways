@@ -25,7 +25,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
         id: buildx
 
-  check-changed-gateway:
+  check-changed-gateways:
     runs-on: ubuntu-latest
     outputs:
       user: ${{ steps.changed-files.outputs.user-gateway_any_changed }}
@@ -44,8 +44,8 @@ jobs:
               - '!user-gateway/.sample.env'
 
   build-user-gateway:
-    needs: [setup-docker, commit-hash, check-changed-service]
-    if: ${{ needs.check-changed-service.outputs.payment == 'true' }}
+    needs: [setup-docker, commit-hash, check-changed-gateways]
+    if: ${{ needs.check-changed-gateways.outputs.payment == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
