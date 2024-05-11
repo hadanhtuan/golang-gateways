@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  user-gateway:
+    container_name: user-gateway
+    restart: always
+    # build:
+    #   dockerfile: ../user-gateway/Dockerfile
+    #   context: .
+    image: hiimtuan/user-gateway
+    ports:
+      - '3000:3000'
+    env_file: ../user-gateway/.env
