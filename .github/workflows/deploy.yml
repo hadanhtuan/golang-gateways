@@ -45,7 +45,7 @@ jobs:
 
   build-user-gateway:
     needs: [setup-docker, commit-hash, check-changed-gateways]
-    if: ${{ needs.check-changed-gateways.outputs.payment == 'true' }}
+    if: ${{ needs.check-changed-gateways.outputs.user == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
