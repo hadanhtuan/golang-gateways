@@ -13,8 +13,9 @@ services:
     networks:
       - docker_gotrek
     volumes: 
-      - ../user-gateway/.env:/go/src/app/user-gateway/.env
-    env_file: ../user-gateway/.env
+      - ../user-gateway/.env:/go/src/app/.env
+    env_file: 
+      - ../user-gateway/.env
 
 networks:
   docker_gotrek:

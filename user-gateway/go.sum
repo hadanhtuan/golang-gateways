@@ -63,6 +63,8 @@ github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 h1:UH//fgunKIs4JdUbpDl1VZCDa
 github.com/grpc-ecosystem/go-grpc-middleware v1.4.0/go.mod h1:g5qyo/la0ALbONm6Vbp88Yd8NsDy6rZz+RcrMPxvld8=
 github.com/hadanhtuan/go-sdk v0.0.0-20240509025345-5dff4e469160 h1:I6gbftNE6qyvuMRnGXbflQCdjzegbea+shKSgVavPws=
 github.com/hadanhtuan/go-sdk v0.0.0-20240509025345-5dff4e469160/go.mod h1:xoL+yFx4WTIa6r1rTe4tpSAr+lBikCMXpAM+nIza8w0=
+github.com/hadanhtuan/go-sdk v0.0.0-20240512074202-cd629112cdbb h1:xREKj6rmeNiLdPkk8QSCbfAa/2+3tNxJ4bwWUhkld4Q=
+github.com/hadanhtuan/go-sdk v0.0.0-20240512074202-cd629112cdbb/go.mod h1:xoL+yFx4WTIa6r1rTe4tpSAr+lBikCMXpAM+nIza8w0=
 github.com/hashicorp/hcl v1.0.0 h1:0Anlzjpi4vEasTeNFn2mLJgTSwt0+6sfsiTG8qcWGx4=
 github.com/hashicorp/hcl v1.0.0/go.mod h1:E5yfLk+7swimpb2L/Alb/PJmXilQ/rhwaUYs4T20WEQ=
 github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnrnM=

@@ -5,7 +5,7 @@ go 1.21.6
 require (
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
-	github.com/hadanhtuan/go-sdk v0.0.0-20240509025345-5dff4e469160
+	github.com/hadanhtuan/go-sdk v0.0.0-20240512074202-cd629112cdbb
 	github.com/stripe/stripe-go v70.15.0+incompatible
 	github.com/stripe/stripe-go/v76 v76.25.0
 	google.golang.org/grpc v1.63.2
