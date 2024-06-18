@@ -11,6 +11,8 @@ func InitRoute(router *gin.RouterGroup, app *pkg.App) error {
 	searchGroup := router.Group("/search")
 
 	searchGroup.POST("/property", searchController.Search)
+	searchGroup.POST("/suggestion", searchController.RenderSuggestion)
+	searchGroup.POST("/prefix", searchController.SearchTitlePrefix)
 	searchGroup.GET("/nation", searchController.GetNation)
 
 	return nil

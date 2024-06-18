@@ -24,9 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SearchServiceClient interface {
 	RenderSuggestion(ctx context.Context, in *MsgSuggestion, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
-	SearchTitlePrefix(ctx context.Context, in *MsgSuggestion, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
+	SearchTitlePrefix(ctx context.Context, in *MessageSearchPrefix, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
 	GetNation(ctx context.Context, in *MsgIP, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
-	// main search
 	SearchProperty(ctx context.Context, in *MsgSearchProperty, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
 }
 
@@ -47,7 +46,7 @@ func (c *searchServiceClient) RenderSuggestion(ctx context.Context, in *MsgSugge
 	return out, nil
 }
 
-func (c *searchServiceClient) SearchTitlePrefix(ctx context.Context, in *MsgSuggestion, opts ...grpc.CallOption) (*sdk.BaseResponse, error) {
+func (c *searchServiceClient) SearchTitlePrefix(ctx context.Context, in *MessageSearchPrefix, opts ...grpc.CallOption) (*sdk.BaseResponse, error) {
 	out := new(sdk.BaseResponse)
 	err := c.cc.Invoke(ctx, "/searchService.searchService/searchTitlePrefix", in, out, opts...)
 	if err != nil {
@@ -79,9 +78,8 @@ func (c *searchServiceClient) SearchProperty(ctx context.Context, in *MsgSearchP
 // for forward compatibility
 type SearchServiceServer interface {
 	RenderSuggestion(context.Context, *MsgSuggestion) (*sdk.BaseResponse, error)
-	SearchTitlePrefix(context.Context, *MsgSuggestion) (*sdk.BaseResponse, error)
+	SearchTitlePrefix(context.Context, *MessageSearchPrefix) (*sdk.BaseResponse, error)
 	GetNation(context.Context, *MsgIP) (*sdk.BaseResponse, error)
-	// main search
 	SearchProperty(context.Context, *MsgSearchProperty) (*sdk.BaseResponse, error)
 	mustEmbedUnimplementedSearchServiceServer()
 }
@@ -93,7 +91,7 @@ type UnimplementedSearchServiceServer struct {
 func (UnimplementedSearchServiceServer) RenderSuggestion(context.Context, *MsgSuggestion) (*sdk.BaseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RenderSuggestion not implemented")
 }
-func (UnimplementedSearchServiceServer) SearchTitlePrefix(context.Context, *MsgSuggestion) (*sdk.BaseResponse, error) {
+func (UnimplementedSearchServiceServer) SearchTitlePrefix(context.Context, *MessageSearchPrefix) (*sdk.BaseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchTitlePrefix not implemented")
 }
 func (UnimplementedSearchServiceServer) GetNation(context.Context, *MsgIP) (*sdk.BaseResponse, error) {
@@ -134,7 +132,7 @@ func _SearchService_RenderSuggestion_Handler(srv interface{}, ctx context.Contex
 }
 
 func _SearchService_SearchTitlePrefix_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgSuggestion)
+	in := new(MessageSearchPrefix)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -146,7 +144,7 @@ func _SearchService_SearchTitlePrefix_Handler(srv interface{}, ctx context.Conte
 		FullMethod: "/searchService.searchService/searchTitlePrefix",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SearchServiceServer).SearchTitlePrefix(ctx, req.(*MsgSuggestion))
+		return srv.(SearchServiceServer).SearchTitlePrefix(ctx, req.(*MessageSearchPrefix))
 	}
 	return interceptor(ctx, in, info, handler)
 }

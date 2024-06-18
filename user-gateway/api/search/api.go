@@ -67,3 +67,59 @@ func (bc *SearchController) GetNation(c *gin.Context) {
 
 	c.JSON(int(newResult.Status), newResult)
 }
+
+func (bc *SearchController) RenderSuggestion(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	var payload searchProto.MsgSuggestion
+	err := c.BindJSON(&payload)
+
+	if err != nil {
+		c.JSON(int(common.APIStatus.BadRequest), &sdk.BaseResponse{
+			Status:  common.APIStatus.BadRequest,
+			Message: "Error parsing body. Error detail " + err.Error(),
+		})
+		return
+	}
+
+	if payload.Paginate == nil {
+		payload.Paginate = &sdk.Pagination{
+			Offset: 0,
+			Limit:  10,
+		}
+	}
+
+	result, _ := bc.ServiceSearchClient.RenderSuggestion(ctx, &payload)
+	newResult := util.ConvertResult(result)
+
+	c.JSON(int(newResult.Status), newResult)
+}
+
+func (bc *SearchController) SearchTitlePrefix(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	var payload searchProto.MessageSearchPrefix
+	err := c.BindJSON(&payload)
+
+	if err != nil {
+		c.JSON(int(common.APIStatus.BadRequest), &sdk.BaseResponse{
+			Status:  common.APIStatus.BadRequest,
+			Message: "Error parsing body. Error detail " + err.Error(),
+		})
+		return
+	}
+
+	if payload.Paginate == nil {
+		payload.Paginate = &sdk.Pagination{
+			Offset: 0,
+			Limit:  10,
+		}
+	}
+
+	result, _ := bc.ServiceSearchClient.SearchTitlePrefix(ctx, &payload)
+	newResult := util.ConvertResult(result)
+
+	c.JSON(int(newResult.Status), newResult)
+}

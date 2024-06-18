@@ -8,11 +8,15 @@ option go_package = "search-service/proto/search";
 
 service searchService {
   rpc RenderSuggestion(MsgSuggestion) returns (sdk.BaseResponse);
-  rpc searchTitlePrefix(MsgSuggestion) returns (sdk.BaseResponse);
+  rpc searchTitlePrefix(MessageSearchPrefix) returns (sdk.BaseResponse);
 
   rpc getNation(MsgIP) returns (sdk.BaseResponse);
-  //main search
   rpc searchProperty(MsgSearchProperty) returns (sdk.BaseResponse);
+}
+
+message MessageSearchPrefix {
+  sdk.Pagination paginate = 1;
+  string searchText = 2;
 }
 
 message MsgIP {
