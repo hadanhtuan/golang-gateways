@@ -2,7 +2,6 @@ package apiSearch
 
 import (
 	"context"
-	"fmt"
 	"time"
 	"user-gateway/internal/util"
 	"user-gateway/proto/sdk"
@@ -62,7 +61,6 @@ func (bc *SearchController) GetNation(c *gin.Context) {
 	}
 
 	result, _ := bc.ServiceSearchClient.GetNation(ctx, &payload)
-	fmt.Println(result.Status)
 	newResult := util.ConvertResult(result)
 
 	c.JSON(int(newResult.Status), newResult)
