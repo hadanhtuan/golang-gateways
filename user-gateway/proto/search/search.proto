@@ -38,9 +38,9 @@ message MsgProperty {
   optional string id = 1;
 
   optional string hostId = 2;
-  optional string hostFirstName = 44;
-  optional string hostLastName = 42;
+  optional string hostName = 44;
   optional string propertyType = 3;
+  optional string status = 45;
   optional float overallRate = 4;
 
   optional int32 maxGuests = 5;
