@@ -50,8 +50,8 @@ message MsgProperty {
   optional string id = 1;
 
   string hostId = 2;
-  string hostFirstName = 44;
-  string hostLastName = 42;
+  string hostName = 44;
+  string hostAvatar = 49;
   string propertyType = 3;
   float overallRate = 4;
 
@@ -181,6 +181,9 @@ message MsgBooking{
   string id = 1;
   string propertyId = 2;
   string userId = 3;
+  string userName = 15;
+  string hostId = 16;
+  string hostName = 17;
   int64 checkInDate = 4;
   int64 checkoutDate = 5;
   int32 guestNumber = 6;

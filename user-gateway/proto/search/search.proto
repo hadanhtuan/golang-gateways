@@ -39,6 +39,7 @@ message MsgProperty {
 
   optional string hostId = 2;
   optional string hostName = 44;
+  optional string hostAvatar = 47;
   optional string propertyType = 3;
   optional string status = 45;
   optional float overallRate = 4;
@@ -72,6 +73,7 @@ message MsgProperty {
   optional string userId = 27;
 
 }
+
 
 message MsgAmenity{
   optional string id = 1;
