@@ -44,6 +44,9 @@ message MsgProperty {
   optional string status = 45;
   optional float overallRate = 4;
 
+  optional int64 nextCheckInDate = 50;
+  optional int64 nextCheckoutDate = 51;
+
   optional int32 maxGuests = 5;
   optional int32 maxPets = 24;
   optional int32 numBeds = 6;

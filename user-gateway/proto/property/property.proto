@@ -54,6 +54,9 @@ message MsgProperty {
   string hostAvatar = 49;
   string propertyType = 3;
   float overallRate = 4;
+ 
+  int64 nextCheckInDate = 50;
+  int64 nextCheckoutDate = 51;
 
   int32 maxGuests = 5;
   int32 maxPets = 24;
