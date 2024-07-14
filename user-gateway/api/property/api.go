@@ -2,6 +2,7 @@ package apiProperty
 
 import (
 	"context"
+	"fmt"
 	"time"
 	"user-gateway/internal/util"
 	propertyProto "user-gateway/proto/property"
@@ -391,6 +392,17 @@ func (bc *PropertyController) GetBooking(c *gin.Context) {
 	}
 
 	result, _ := bc.ServicePropertyClient.GetBooking(ctx, &payload)
+	newResult := util.ConvertResult(result)
+	c.JSON(int(newResult.Status), newResult)
+}
+
+func (bc *PropertyController) AnalyzeBooking(c *gin.Context) {
+	fmt.Println(5)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	var payload propertyProto.MsgQueryBooking
+
+	result, _ := bc.ServicePropertyClient.AnalyzeBooking(ctx, &payload)
 	newResult := util.ConvertResult(result)
 	c.JSON(int(newResult.Status), newResult)
 }

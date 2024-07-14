@@ -8,6 +8,7 @@ option go_package = "property-service/proto/property";
 
 service propertyService {
   // Booking
+  rpc AnalyzeBooking(MsgQueryBooking) returns (sdk.BaseResponse);
   rpc GetBooking(MsgQueryBooking) returns (sdk.BaseResponse);
   rpc CountBookingStatus(MsgBooking) returns (sdk.BaseResponse);
   rpc CreateBooking(MsgBooking) returns (sdk.BaseResponse);

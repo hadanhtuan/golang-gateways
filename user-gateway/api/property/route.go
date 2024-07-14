@@ -19,6 +19,7 @@ func InitRoute(router *gin.RouterGroup, app *sdk.App) error {
 	// Booking
 	propertyGroup.POST("/booking", propertyController.CreateBooking)
 	propertyGroup.POST("/booking/get", propertyController.GetBooking)
+	propertyGroup.POST("/booking/analyze", propertyController.AnalyzeBooking)
 	propertyGroup.POST("/booking/count-by-status", propertyController.CountBookingStatus)
 
 	// Review

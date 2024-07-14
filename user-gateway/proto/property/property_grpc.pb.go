@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PropertyServiceClient interface {
 	// Booking
+	AnalyzeBooking(ctx context.Context, in *MsgQueryBooking, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
 	GetBooking(ctx context.Context, in *MsgQueryBooking, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
 	CountBookingStatus(ctx context.Context, in *MsgBooking, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
 	CreateBooking(ctx context.Context, in *MsgBooking, opts ...grpc.CallOption) (*sdk.BaseResponse, error)
@@ -56,6 +57,15 @@ type propertyServiceClient struct {
 
 func NewPropertyServiceClient(cc grpc.ClientConnInterface) PropertyServiceClient {
 	return &propertyServiceClient{cc}
+}
+
+func (c *propertyServiceClient) AnalyzeBooking(ctx context.Context, in *MsgQueryBooking, opts ...grpc.CallOption) (*sdk.BaseResponse, error) {
+	out := new(sdk.BaseResponse)
+	err := c.cc.Invoke(ctx, "/propertyService.propertyService/AnalyzeBooking", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *propertyServiceClient) GetBooking(ctx context.Context, in *MsgQueryBooking, opts ...grpc.CallOption) (*sdk.BaseResponse, error) {
@@ -243,6 +253,7 @@ func (c *propertyServiceClient) GetFavorite(ctx context.Context, in *MsgQueryFav
 // for forward compatibility
 type PropertyServiceServer interface {
 	// Booking
+	AnalyzeBooking(context.Context, *MsgQueryBooking) (*sdk.BaseResponse, error)
 	GetBooking(context.Context, *MsgQueryBooking) (*sdk.BaseResponse, error)
 	CountBookingStatus(context.Context, *MsgBooking) (*sdk.BaseResponse, error)
 	CreateBooking(context.Context, *MsgBooking) (*sdk.BaseResponse, error)
@@ -274,6 +285,9 @@ type PropertyServiceServer interface {
 type UnimplementedPropertyServiceServer struct {
 }
 
+func (UnimplementedPropertyServiceServer) AnalyzeBooking(context.Context, *MsgQueryBooking) (*sdk.BaseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AnalyzeBooking not implemented")
+}
 func (UnimplementedPropertyServiceServer) GetBooking(context.Context, *MsgQueryBooking) (*sdk.BaseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBooking not implemented")
 }
@@ -345,6 +359,24 @@ type UnsafePropertyServiceServer interface {
 
 func RegisterPropertyServiceServer(s grpc.ServiceRegistrar, srv PropertyServiceServer) {
 	s.RegisterService(&PropertyService_ServiceDesc, srv)
+}
+
+func _PropertyService_AnalyzeBooking_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgQueryBooking)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PropertyServiceServer).AnalyzeBooking(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/propertyService.propertyService/AnalyzeBooking",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PropertyServiceServer).AnalyzeBooking(ctx, req.(*MsgQueryBooking))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _PropertyService_GetBooking_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -714,6 +746,10 @@ var PropertyService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "propertyService.propertyService",
 	HandlerType: (*PropertyServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "AnalyzeBooking",
+			Handler:    _PropertyService_AnalyzeBooking_Handler,
+		},
 		{
 			MethodName: "GetBooking",
 			Handler:    _PropertyService_GetBooking_Handler,
