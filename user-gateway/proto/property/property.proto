@@ -126,7 +126,7 @@ message MsgCreateReview{
   string userId = 1;
   optional string propertyId = 2;
   string parentId = 3;
-  float rating = 4;
+  float overallRating = 4;
   string comment = 5;
   string imageUrl = 6;
 }
